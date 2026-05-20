@@ -1169,6 +1169,725 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 .aiw-use{width:100%;margin-top:10px;padding:9px;border:none;border-radius:9px;
   background:var(--pp);color:#fff;font-size:13px;font-weight:700;cursor:pointer;
   font-family:inherit;display:none;}
+
+/* ══ 电商套图：两个设置按钮垂直堆叠 ══ */
+.suite-cfg-btns{display:flex;flex-direction:column;gap:7px;}
+
+/* ══ 生成模式 ══ */
+.gen-mode-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:10px 0 0;
+}
+.gen-mode-label{font-size:12px;font-weight:600;color:#888;}
+.gen-mode-seg{
+  display:flex;background:#f3f3f5;border-radius:8px;padding:3px;gap:2px;
+}
+.gen-mode-btn{
+  padding:5px 14px;font-size:12px;font-weight:600;border:none;
+  border-radius:6px;cursor:pointer;font-family:inherit;
+  background:transparent;color:#999;transition:all .15s;white-space:nowrap;
+}
+.gen-mode-btn.active{
+  background:#fff;color:#111;
+  box-shadow:0 1px 4px rgba(0,0,0,.10);
+}
+.gen-mode-btn.active.ai-mode{
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:#fff;box-shadow:0 2px 8px rgba(99,102,241,.3);
+}
+
+/* ══ AI智能模式：内嵌板块快选面板 ══ */
+.ai-inline-panel{
+  background:#fafbff;border:1.5px solid #ede9ff;border-radius:12px;
+  overflow:hidden;
+}
+.ai-inline-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 8px;border-bottom:1px solid #ede9ff;
+}
+.ai-inline-hd-l{display:flex;align-items:center;gap:6px;}
+.ai-inline-hd-title{font-size:12px;font-weight:700;color:#6366f1;}
+.ai-inline-tip{font-size:11px;color:#bbb;}
+.ai-inline-add{
+  font-size:11px;font-weight:600;color:#6366f1;
+  border:none;background:none;cursor:pointer;padding:0;font-family:inherit;
+}
+/* 板块行 */
+.ai-ipln-list{display:flex;flex-direction:column;}
+.ai-ipln-row{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 14px;border-bottom:1px solid #f0eeff;transition:opacity .15s;
+}
+.ai-ipln-row:last-child{border-bottom:none;}
+.ai-ipln-row.off{opacity:.45;}
+/* toggle */
+.ai-tog{position:relative;width:30px;height:17px;flex-shrink:0;}
+.ai-tog input{opacity:0;width:0;height:0;position:absolute;}
+.ai-tog-track{
+  position:absolute;inset:0;border-radius:9px;background:#e0e0e0;
+  transition:background .2s;cursor:pointer;
+}
+.ai-tog input:checked ~ .ai-tog-track{background:#6366f1;}
+.ai-tog-thumb{
+  position:absolute;top:2.5px;left:2.5px;
+  width:12px;height:12px;border-radius:50%;background:#fff;
+  transition:transform .2s;pointer-events:none;
+}
+.ai-tog input:checked ~ .ai-tog-thumb{transform:translateX(13px);}
+/* 名称 */
+.ai-ipln-name{flex:1;font-size:13px;font-weight:600;color:#222;}
+/* 步进 */
+.ai-st{display:flex;align-items:center;gap:4px;}
+.ai-st-btn{
+  width:22px;height:22px;border:1.5px solid #e0e0e0;border-radius:6px;
+  background:#fff;cursor:pointer;font-size:14px;line-height:1;
+  display:flex;align-items:center;justify-content:center;color:#555;
+  transition:border-color .12s;
+}
+.ai-st-btn:hover{border-color:#6366f1;color:#6366f1;}
+.ai-st-n{font-size:13px;font-weight:700;color:#111;min-width:16px;text-align:center;}
+/* 尺寸 */
+.ai-sz{position:relative;flex-shrink:0;}
+.ai-sz-sel{
+  appearance:none;-webkit-appearance:none;
+  border:1.5px solid #e8e8e8;border-radius:7px;
+  padding:4px 22px 4px 8px;font-size:11px;font-weight:600;
+  color:#555;background:#fff;cursor:pointer;font-family:inherit;outline:none;
+}
+.ai-sz-sel:focus{border-color:#6366f1;}
+.ai-sz-arr{
+  position:absolute;right:6px;top:50%;transform:translateY(-50%);
+  pointer-events:none;color:#aaa;
+}
+/* 底部：添加自定义行 */
+.ai-inline-add-zone{
+  display:flex;align-items:center;gap:6px;padding:8px 14px;
+  border-top:1px solid #ede9ff;
+}
+.ai-inline-add-field{
+  flex:1;border:1.5px solid #e8e8e8;border-radius:7px;
+  padding:5px 10px;font-size:12px;font-family:inherit;outline:none;
+  color:#222;background:#fff;
+}
+.ai-inline-add-field:focus{border-color:#6366f1;}
+.ai-inline-add-field::placeholder{color:#ccc;}
+.ai-inline-add-go{
+  padding:5px 12px;border:none;border-radius:7px;
+  background:#6366f1;color:#fff;font-size:12px;font-weight:700;
+  cursor:pointer;font-family:inherit;white-space:nowrap;
+}
+
+/* ══ 板块设置弹窗 ══ */
+.ipln-mask{
+  display:none;position:fixed;inset:0;z-index:700;
+  align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.32);
+}
+.ipln-mask.show{display:flex;}
+.ipln-sheet{
+  width:360px;max-height:82vh;background:#fff;
+  border-radius:18px 18px 0 0;
+  box-shadow:0 -4px 32px rgba(0,0,0,.12);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+/* 顶部拖把条 */
+.ipln-handle{
+  width:36px;height:4px;border-radius:2px;background:#e0e0e0;
+  margin:10px auto 0;flex-shrink:0;
+}
+.ipln-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px 0;flex-shrink:0;
+}
+.ipln-title{font-size:15px;font-weight:700;color:#111;}
+.ipln-close{
+  width:26px;height:26px;border-radius:50%;border:none;
+  background:#f2f2f2;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;color:#999;
+}
+/* 模式 Tab */
+.ipln-tabs{
+  display:flex;gap:0;padding:10px 20px 0;flex-shrink:0;
+  border-bottom:1.5px solid #f0f0f0;
+}
+.ipln-tab{
+  flex:1;padding:8px 0;font-size:13px;font-weight:600;color:#bbb;
+  border:none;background:none;cursor:pointer;font-family:inherit;
+  border-bottom:2px solid transparent;margin-bottom:-1.5px;
+  transition:color .15s,border-color .15s;
+}
+.ipln-tab.active{color:#111;border-bottom-color:#111;}
+/* AI 面板 */
+.ipln-ai-panel{padding:16px 20px 8px;display:flex;flex-direction:column;gap:12px;}
+.ipln-ai-label{font-size:12px;font-weight:600;color:#888;}
+.ipln-ai-ta{
+  width:100%;box-sizing:border-box;
+  border:1.5px solid #e8e8e8;border-radius:10px;
+  padding:10px 12px;font-size:13px;font-family:inherit;
+  color:#222;resize:none;height:90px;outline:none;
+  line-height:1.6;background:#fafafa;transition:border-color .15s;
+}
+.ipln-ai-ta:focus{border-color:#6366f1;background:#fff;}
+.ipln-ai-ta::placeholder{color:#ccc;}
+.ipln-ai-gen-btn{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:11px;border:none;border-radius:10px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:#fff;font-size:13px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:opacity .15s;
+}
+.ipln-ai-gen-btn:active{opacity:.85;}
+.ipln-ai-gen-btn svg{flex-shrink:0;}
+/* AI 生成结果预览 */
+.ipln-ai-result{display:none;flex-direction:column;gap:0;}
+.ipln-ai-result.show{display:flex;}
+.ipln-ai-result-hd{
+  font-size:11px;font-weight:700;color:#bbb;letter-spacing:.04em;
+  padding:0 20px 8px;text-transform:uppercase;
+}
+/* loading 状态 */
+.ipln-ai-loading{
+  display:none;align-items:center;justify-content:center;gap:8px;
+  padding:20px;color:#999;font-size:13px;
+}
+.ipln-ai-loading.show{display:flex;}
+@keyframes iplnSpin{to{transform:rotate(360deg);}}
+.ipln-ai-spinner{
+  width:16px;height:16px;border:2px solid #e0e0e0;
+  border-top-color:#6366f1;border-radius:50%;
+  animation:iplnSpin .7s linear infinite;flex-shrink:0;
+}
+/* 列表区 */
+.ipln-body{
+  flex:1;overflow-y:auto;
+  padding:0 0 4px;
+}
+.ipln-body::-webkit-scrollbar{width:0;}
+/* 每一行 */
+.ipln-row{
+  display:flex;align-items:center;gap:0;
+  padding:0 20px;min-height:52px;
+  border-bottom:1px solid #f3f3f3;
+  transition:opacity .15s;
+}
+.ipln-row:last-child{border-bottom:none;}
+/* 开关 toggle */
+.ipln-tog{
+  position:relative;width:36px;height:20px;flex-shrink:0;cursor:pointer;
+  margin-right:12px;
+}
+.ipln-tog input{opacity:0;width:0;height:0;position:absolute;}
+.ipln-tog-track{
+  position:absolute;inset:0;border-radius:10px;
+  background:#e0e0e0;transition:background .2s;
+}
+.ipln-tog input:checked + .ipln-tog-track{background:#6366f1;}
+.ipln-tog-thumb{
+  position:absolute;top:2px;left:2px;
+  width:16px;height:16px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);
+  transition:transform .2s;
+}
+.ipln-tog input:checked ~ .ipln-tog-thumb{transform:translateX(16px);}
+/* 类型名 */
+.ipln-rname{
+  flex:1;font-size:13px;font-weight:600;color:#222;
+  min-width:0;
+}
+.ipln-row.off .ipln-rname{color:#bbb;}
+/* 右侧控件组 */
+.ipln-rctrl{
+  display:flex;align-items:center;gap:8px;flex-shrink:0;
+}
+.ipln-row.off .ipln-rctrl{opacity:.3;pointer-events:none;}
+/* 步进器 */
+.ipln-st{
+  display:flex;align-items:center;gap:0;
+  border:1px solid #e8e8e8;border-radius:7px;overflow:hidden;
+  background:#fff;
+}
+.ipln-st-btn{
+  width:26px;height:26px;border:none;background:none;cursor:pointer;
+  font-size:14px;color:#666;display:flex;align-items:center;justify-content:center;
+  font-family:inherit;transition:background .1s;
+}
+.ipln-st-btn:active{background:#f0f0f0;}
+.ipln-st-n{
+  width:24px;text-align:center;font-size:13px;font-weight:700;color:#111;
+  border-left:1px solid #efefef;border-right:1px solid #efefef;
+  height:26px;display:flex;align-items:center;justify-content:center;
+}
+/* 尺寸选择器 — chips 横向小胶囊 */
+/* 尺寸下拉 */
+.ipln-sz{position:relative;display:flex;align-items:center;}
+.ipln-sz-sel{
+  appearance:none;-webkit-appearance:none;
+  border:1px solid #e8e8e8;border-radius:7px;
+  padding:0 22px 0 8px;height:26px;
+  font-size:12px;font-weight:600;color:#444;font-family:inherit;
+  background:#fafafa;outline:none;cursor:pointer;
+  transition:border-color .12s;
+}
+.ipln-sz-sel:focus{border-color:#6366f1;background:#fff;}
+.ipln-sz-arr{
+  position:absolute;right:6px;top:50%;transform:translateY(-50%);
+  pointer-events:none;color:#bbb;
+}
+/* 展开要求按钮 */
+.ipln-exp{
+  width:24px;height:24px;border:none;background:none;cursor:pointer;
+  color:#ccc;display:flex;align-items:center;justify-content:center;
+  border-radius:5px;flex-shrink:0;transition:color .12s, transform .2s;
+  margin-left:2px;
+}
+.ipln-exp:hover{color:#aaa;}
+.ipln-exp.open{transform:rotate(180deg);color:#6366f1;}
+.ipln-row.off .ipln-exp{opacity:.3;pointer-events:none;}
+/* 要求展开区（滑入） */
+.ipln-req-zone{
+  overflow:hidden;max-height:0;
+  transition:max-height .24s ease, padding .2s;
+  padding:0 20px;background:#fafafa;
+}
+.ipln-req-zone.open{max-height:90px;padding:10px 20px 12px;}
+.ipln-req-input{
+  width:100%;box-sizing:border-box;
+  border:1px solid #e8e8e8;border-radius:8px;
+  padding:7px 10px;font-size:12px;font-family:inherit;color:#333;
+  resize:none;height:60px;outline:none;background:#fff;
+  transition:border-color .15s;line-height:1.5;
+}
+.ipln-req-input:focus{border-color:#6366f1;}
+.ipln-req-input::placeholder{color:#ccc;}
+/* 自定义添加区 */
+.ipln-add-zone{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 20px;border-top:1px solid #f3f3f3;
+}
+.ipln-add-field{
+  flex:1;border:1px solid #e8e8e8;border-radius:8px;
+  padding:8px 11px;font-size:12px;font-family:inherit;
+  color:#333;outline:none;background:#fafafa;
+  transition:border-color .15s;
+}
+.ipln-add-field:focus{border-color:#6366f1;background:#fff;}
+.ipln-add-field::placeholder{color:#ccc;}
+.ipln-add-go{
+  padding:8px 14px;border:none;border-radius:8px;
+  background:#6366f1;color:#fff;font-size:12px;
+  font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0;
+}
+/* 底部确认 */
+.ipln-foot{
+  padding:12px 20px 22px;border-top:1px solid #f0f0f0;
+  flex-shrink:0;
+}
+.ipln-save-btn{
+  width:100%;padding:12px;border:none;border-radius:12px;
+  background:#111;color:#fff;font-size:14px;
+  font-weight:700;cursor:pointer;font-family:inherit;
+  letter-spacing:.02em;
+}
+.ipln-mask.show{display:flex;}
+.ipln-sheet{
+  width:360px;max-height:90vh;background:#fff;
+  border-radius:20px 20px 0 0;
+  box-shadow:0 -8px 40px rgba(108,92,231,.18);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.ipln-head{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:18px 20px 14px;flex-shrink:0;
+  border-bottom:1px solid var(--border);
+}
+.ipln-title{font-size:16px;font-weight:700;color:var(--text);line-height:1.3;}
+.ipln-head-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.ipln-close{
+  width:28px;height:28px;border-radius:50%;border:none;
+  background:var(--bg);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;color:var(--muted);flex-shrink:0;margin-top:2px;
+}
+.ipln-body{flex:1;overflow-y:auto;padding:8px 0 4px;}
+.ipln-body::-webkit-scrollbar{width:3px;}
+.ipln-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* 每个图片类型的卡片块 */
+.ipln-item{
+  border-bottom:1px solid var(--border);
+}
+.ipln-item:last-of-type{border-bottom:none;}
+.ipln-item-top{
+  display:flex;align-items:center;gap:8px;
+  padding:11px 20px;cursor:default;
+}
+.ipln-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ipln-name{flex:1;font-size:13px;font-weight:600;color:var(--text);}
+.ipln-badge{
+  font-size:10px;font-weight:600;color:var(--muted);
+  background:var(--bg);border-radius:4px;
+  padding:2px 6px;border:1px solid var(--border);flex-shrink:0;
+}
+/* 步进器 */
+.ipln-stepper{
+  display:flex;align-items:center;gap:4px;
+  background:var(--bg);border-radius:8px;padding:3px 5px;
+  border:1.5px solid var(--border);flex-shrink:0;
+}
+.ipln-step-btn{
+  width:22px;height:22px;border:none;background:none;cursor:pointer;
+  font-size:15px;color:var(--muted);display:flex;align-items:center;
+  justify-content:center;border-radius:5px;padding:0;line-height:1;
+  transition:background .1s;
+}
+.ipln-step-btn:hover{background:#e8e8f5;color:var(--text);}
+.ipln-step-val{
+  font-size:13px;font-weight:700;color:var(--text);
+  min-width:18px;text-align:center;
+}
+/* 勾选框 */
+.ipln-ck{
+  width:18px;height:18px;border-radius:5px;flex-shrink:0;
+  border:1.5px solid var(--border);background:#fff;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .15s,border-color .15s;
+  padding:0;
+}
+.ipln-ck-icon{color:transparent;transition:color .12s;}
+.ipln-item.checked .ipln-ck{background:#6366f1;border-color:#6366f1;}
+.ipln-item.checked .ipln-ck-icon{color:#fff;}
+/* 未勾选时整行半透明禁用 */
+.ipln-item:not(.checked) .ipln-name,
+.ipln-item:not(.checked) .ipln-dot,
+.ipln-item:not(.checked) .ipln-chips,
+.ipln-item:not(.checked) .ipln-expand-btn{opacity:.38;pointer-events:none;}
+.ipln-item:not(.checked) .ipln-req-wrap{display:none;}
+/* 行内 chips（不换行，可横滚） */
+.ipln-chips-inline{flex:1;display:flex;gap:4px;overflow-x:auto;flex-wrap:nowrap;min-width:0;}
+.ipln-chips-inline::-webkit-scrollbar{display:none;}
+/* 展开按钮 */
+.ipln-expand-btn{
+  width:24px;height:24px;border:none;background:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:6px;color:var(--muted);flex-shrink:0;
+  transition:background .1s,color .1s,transform .2s;
+}
+.ipln-expand-btn:hover{background:var(--bg);color:var(--text);}
+.ipln-expand-btn.open{transform:rotate(180deg);color:var(--pp);}
+/* 要求展开区 */
+.ipln-req-wrap{
+  max-height:0;overflow:hidden;
+  transition:max-height .3s ease,padding .2s;
+  padding:0 20px;
+}
+.ipln-req-wrap.open{
+  max-height:200px;padding:0 20px 14px;
+}
+/* 尺寸选择行 */
+.ipln-size-row{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:10px;padding-top:2px;
+}
+.ipln-size-label{
+  font-size:11px;font-weight:600;color:var(--muted);
+  flex-shrink:0;min-width:24px;
+}
+.ipln-chips{display:flex;gap:5px;flex-wrap:wrap;}
+.ipln-chip{
+  padding:4px 9px;border-radius:6px;font-size:11px;font-weight:600;
+  border:1.5px solid var(--border);background:#fff;color:var(--muted);
+  cursor:pointer;font-family:inherit;transition:all .12s;line-height:1;
+}
+.ipln-chip:hover{border-color:#a5b4fc;color:#6366f1;}
+.ipln-chip.active{
+  border-color:#6366f1;background:#eef2ff;color:#6366f1;
+}
+.ipln-req-ta{
+  width:100%;box-sizing:border-box;
+  border:1.5px solid var(--border);border-radius:9px;
+  padding:8px 10px;font-size:12px;font-family:inherit;
+  color:var(--text);line-height:1.5;resize:none;height:72px;
+  outline:none;background:#fafafa;transition:border-color .12s;
+}
+.ipln-req-ta:focus{border-color:#6366f1;background:#fff;}
+.ipln-req-ta::placeholder{color:#c0c6d4;}
+/* 要求有内容时展开按钮带标记 */
+.ipln-expand-btn.has-req::after{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:#6366f1;position:absolute;top:3px;right:3px;
+}
+.ipln-expand-btn{position:relative;}
+
+/* 添加自定义区 */
+.ipln-add-section{
+  padding:12px 20px 8px;
+  border-top:1px solid var(--border);
+  margin-top:4px;
+}
+.ipln-add-label{
+  font-size:11px;font-weight:700;color:var(--muted);
+  letter-spacing:.04em;margin-bottom:8px;
+}
+.ipln-add-row{display:flex;align-items:center;gap:6px;}
+.ipln-add-input{
+  flex:1;min-width:0;border:1.5px solid var(--border);border-radius:8px;
+  padding:7px 9px;font-size:12px;font-family:inherit;
+  color:var(--text);outline:none;background:#fafafa;
+  transition:border-color .12s;
+}
+.ipln-add-input:focus{border-color:#6366f1;background:#fff;}
+.ipln-add-input::placeholder{color:#c0c6d4;}
+.ipln-add-ratio{
+  width:60px;flex-shrink:0;border:1.5px solid var(--border);border-radius:8px;
+  padding:7px 4px;font-size:11px;font-family:inherit;color:var(--text);
+  outline:none;background:#fafafa;cursor:pointer;
+}
+.ipln-add-btn{
+  padding:7px 10px;border:none;border-radius:8px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:#fff;font-size:12px;font-weight:700;cursor:pointer;
+  font-family:inherit;white-space:nowrap;flex-shrink:0;
+}
+/* 底部 */
+.ipln-foot{
+  padding:12px 20px 20px;border-top:1px solid var(--border);
+  display:flex;gap:10px;flex-shrink:0;
+}
+.ipln-cancel{
+  flex:1;padding:11px;border:1.5px solid var(--border);border-radius:11px;
+  background:#fff;font-size:13px;font-weight:600;color:var(--muted);
+  cursor:pointer;font-family:inherit;
+}
+.ipln-save{
+  flex:2;padding:11px;border:none;border-radius:11px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+}
+
+/* ══ 图片类型规划板块 ══ */
+.imgplan-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  padding:8px 0 0 8px;margin:-8px 0 0 -8px;
+}
+.imgplan-card{
+  border:1.5px solid var(--border);border-radius:12px;
+  padding:11px 12px 10px;cursor:pointer;
+  transition:border-color .15s,box-shadow .15s;
+  display:flex;flex-direction:column;position:relative;
+  gap:4px;
+}
+.imgplan-card:hover{border-color:var(--pp2);}
+.imgplan-card.sel{border-color:var(--pp);}
+.imgplan-card .mod-check{
+  position:absolute;top:8px;right:9px;
+  width:20px;height:20px;border-radius:50%;
+  border:1.5px solid var(--border);background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.imgplan-card .mod-check svg{display:none;}
+.imgplan-card.sel .mod-check{background:#1a1a1a;border-color:#1a1a1a;}
+.imgplan-card.sel .mod-check svg{display:block;}
+.imgplan-type-row{display:flex;align-items:center;gap:5px;margin-bottom:2px;}
+.imgplan-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.imgplan-name{font-size:12px;font-weight:600;color:var(--text);padding-right:24px;line-height:1.3;}
+.imgplan-count-wrap{
+  display:flex;align-items:center;gap:3px;
+  background:#f5f5fa;border-radius:6px;padding:2px 4px;
+  border:1px solid #eaeaf5;align-self:flex-start;
+}
+.imgplan-count-btn{
+  width:18px;height:18px;border:none;background:none;cursor:pointer;
+  color:var(--muted);font-size:13px;display:flex;align-items:center;
+  justify-content:center;border-radius:4px;padding:0;line-height:1;
+  transition:background .1s;
+}
+.imgplan-count-btn:hover{background:#e0e0f0;color:var(--text);}
+.imgplan-count-val{font-size:11px;font-weight:700;color:var(--text);min-width:14px;text-align:center;}
+.imgplan-req-wrap{margin-top:2px;}
+.imgplan-req{
+  width:100%;box-sizing:border-box;
+  border:1.5px solid var(--border);border-radius:7px;
+  padding:6px 8px;font-size:11px;font-family:inherit;
+  color:var(--text);resize:none;outline:none;
+  min-height:48px;line-height:1.55;
+  transition:border-color .12s;background:#fafafa;
+}
+.imgplan-req:focus{border-color:#6366f1;background:#fff;}
+.imgplan-req::placeholder{color:#c0c6d4;}
+
+/* ══ 套图卡片类型标签 ══ */
+.mod-stype-tag{
+  position:absolute;top:-9px;left:8px;
+  font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;
+  background:rgba(99,102,241,.13);color:#6366f1;pointer-events:none;z-index:2;
+}
+.mod-stype-tag.stype-detail{background:rgba(16,185,129,.12);color:#059669;}
+.mod-stype-tag.stype-sku   {background:rgba(124,58,237,.12);color:#7c3aed;}
+.mod-stype-tag.stype-promo {background:rgba(245,158,11,.12);color:#d97706;}
+.mod-ref-dot{
+  position:absolute;bottom:5px;right:5px;width:7px;height:7px;
+  border-radius:50%;background:#7c3aed;display:none;z-index:2;
+}
+.mod-ref-dot.on{display:block;}
+
+/* ══ 板块配置弹窗 ══ */
+.scfg-mask{
+  position:fixed;inset:0;background:rgba(0,0,0,.35);
+  z-index:9000;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .18s;
+}
+.scfg-mask.show{opacity:1;pointer-events:all;}
+.scfg-sheet{
+  background:#fff;border-radius:16px;width:300px;max-height:85vh;
+  overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.18);
+  display:flex;flex-direction:column;
+}
+.scfg-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px 12px;border-bottom:1px solid #f3f4f6;flex-shrink:0;
+}
+.scfg-head-title{font-size:14px;font-weight:700;color:var(--text);}
+.scfg-close-btn{
+  border:none;background:none;cursor:pointer;padding:4px;
+  color:var(--muted);border-radius:6px;line-height:1;
+}
+.scfg-close-btn:hover{background:#f3f4f6;}
+.scfg-body{padding:14px 16px 4px;flex:1;}
+.scfg-section{margin-bottom:14px;}
+.scfg-label{
+  display:block;font-size:11px;font-weight:700;color:var(--muted);
+  margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase;
+}
+/* Combobox */
+.scfg-combo{position:relative;}
+.scfg-combo-input-wrap{
+  display:flex;align-items:center;
+  border:1.5px solid var(--border);border-radius:8px;
+  padding:0 10px;background:#fff;cursor:text;transition:border-color .12s;
+}
+.scfg-combo-input-wrap:focus-within{border-color:#6366f1;}
+.scfg-combo-input{
+  flex:1;border:none;outline:none;font-size:12px;font-family:inherit;
+  color:var(--text);background:transparent;padding:8px 0;
+}
+.scfg-combo-input::placeholder{color:#b0b7c3;}
+.scfg-combo-arrow{color:#b0b7c3;flex-shrink:0;transition:transform .15s;}
+.scfg-combo-arrow.open{transform:rotate(180deg);}
+.scfg-combo-drop{
+  display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);
+  background:#fff;border:1.5px solid var(--border);border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.10);z-index:9999;overflow:hidden;
+}
+.scfg-combo-drop.open{display:block;}
+.scfg-combo-opt{
+  padding:11px 14px;font-size:13px;color:var(--text);cursor:pointer;
+  transition:background .1s;
+}
+.scfg-combo-opt:hover{background:#f5f5ff;}
+.scfg-combo-opt.on{background:rgba(99,102,241,.08);color:#6366f1;font-weight:600;}
+.scfg-combo-opt[data-v="详情"].on{background:rgba(16,185,129,.08);color:#059669;}
+.scfg-combo-opt[data-v="SKU"].on{background:rgba(124,58,237,.08);color:#7c3aed;}
+.scfg-combo-opt[data-v="车图"].on{background:rgba(245,158,11,.08);color:#d97706;}
+.scfg-combo-opt.hidden{display:none;}
+/* 尺寸 chip */
+.scfg-ratio-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.scfg-ratio-chip{
+  padding:4px 11px;border-radius:6px;font-size:11px;font-weight:600;
+  border:1.5px solid var(--border);cursor:pointer;color:var(--muted);
+  background:#fff;transition:all .12s;font-family:inherit;
+}
+.scfg-ratio-chip:hover{border-color:#a5b4fc;color:#6366f1;}
+.scfg-ratio-chip.on{border-color:#6366f1;background:rgba(99,102,241,.1);color:#6366f1;}
+/* 板块名称 input */
+.scfg-name-input{
+  width:100%;box-sizing:border-box;border:1.5px solid var(--border);
+  border-radius:8px;padding:8px 10px;font-size:12px;font-family:inherit;
+  color:var(--text);outline:none;transition:border-color .12s;
+}
+.scfg-name-input:focus{border-color:#6366f1;}
+/* 参考图 */
+.scfg-ref-zone{
+  border:1.5px dashed var(--border);border-radius:8px;padding:10px;
+  cursor:pointer;text-align:center;transition:border-color .12s;
+  position:relative;min-height:64px;display:flex;align-items:center;justify-content:center;
+}
+.scfg-ref-zone:hover{border-color:#a5b4fc;}
+.scfg-ref-placeholder{font-size:11px;color:var(--muted);}
+.scfg-ref-preview{
+  display:none;width:100%;max-height:120px;object-fit:contain;border-radius:5px;
+}
+.scfg-ref-clear{
+  position:absolute;top:4px;right:4px;width:18px;height:18px;border-radius:50%;
+  background:rgba(0,0,0,.45);color:#fff;border:none;cursor:pointer;
+  display:none;font-size:11px;line-height:18px;text-align:center;padding:0;
+}
+/* 要求说明 */
+.scfg-textarea{
+  width:100%;box-sizing:border-box;border:1.5px solid var(--border);
+  border-radius:8px;padding:8px 10px;font-size:12px;font-family:inherit;
+  color:var(--text);outline:none;resize:vertical;min-height:60px;
+  transition:border-color .12s;
+}
+.scfg-textarea:focus{border-color:#6366f1;}
+/* 底部按钮 */
+.scfg-foot{
+  padding:12px 16px 16px;border-top:1px solid #f3f4f6;
+  display:flex;gap:8px;flex-shrink:0;
+}
+.scfg-btn-cancel{
+  flex:1;padding:9px;border:1.5px solid var(--border);border-radius:9px;
+  background:#fff;font-size:12px;font-weight:600;color:var(--muted);
+  cursor:pointer;font-family:inherit;
+}
+.scfg-btn-save{
+  flex:2;padding:9px;border:none;border-radius:9px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
+}
+
+/* ══ 添加套图弹窗 ══ */
+.suite-add-mask{
+  position:fixed;inset:0;background:rgba(0,0,0,.35);
+  z-index:9000;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .18s;
+}
+.suite-add-mask.show{opacity:1;pointer-events:all;}
+.suite-add-sheet{
+  background:#fff;border-radius:16px;width:280px;
+  box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden;
+}
+.suite-add-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px 12px;border-bottom:1px solid #f3f4f6;
+}
+.suite-add-title{font-size:14px;font-weight:700;color:var(--text);}
+.suite-add-body{padding:14px 16px;}
+.suite-add-types{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px;}
+.sa-type-btn{
+  padding:7px 4px;border:1.5px solid var(--border);border-radius:8px;
+  background:#fff;font-size:11px;font-weight:600;color:var(--muted);
+  cursor:pointer;font-family:inherit;transition:all .12s;text-align:center;
+}
+.sa-type-btn:hover{border-color:#a5b4fc;color:#6366f1;}
+.sa-type-btn.on{border-color:#6366f1;background:rgba(99,102,241,.1);color:#6366f1;}
+.suite-add-label{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;display:block;}
+.suite-add-input{
+  width:100%;box-sizing:border-box;border:1.5px solid var(--border);
+  border-radius:8px;padding:8px 10px;font-size:12px;font-family:inherit;
+  color:var(--text);outline:none;margin-bottom:10px;
+}
+.suite-add-input:focus{border-color:#6366f1;}
+.suite-add-foot{display:flex;gap:8px;padding:0 16px 16px;}
+.suite-add-cancel{
+  flex:1;padding:9px;border:1.5px solid var(--border);border-radius:9px;
+  background:#fff;font-size:12px;font-weight:600;color:var(--muted);
+  cursor:pointer;font-family:inherit;
+}
+.suite-add-save{
+  flex:2;padding:9px;border:none;border-radius:9px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
+}
 </style>
 </head>
 <body>
@@ -1196,8 +1915,8 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="si" onclick="switchScene('aplus',this)"><span class="si-ic">🏠</span>商品套图</div>
-    <div class="si active" onclick="switchScene('aplus',this)"><span class="si-ic">📄</span>A+详情</div>
-    <div class="si" onclick="switchScene('aplusAdv',this)"><span class="si-ic">🌟</span>A+高级生图</div>
+    <div class="si active" onclick="switchScene('aplus',this)"><span class="si-ic">📄</span>主详图</div>
+    <div class="si" onclick="switchScene('aplusAdv',this)"><span class="si-ic">🌟</span>电商套图</div>
     <div class="si" onclick="switchScene('aplus',this)"><span class="si-ic">⚡</span>服饰穿戴</div>
     <div class="si" onclick="switchScene('aplus',this)"><span class="si-ic">✨</span>爆款复刻</div>
   </aside>
@@ -1589,199 +2308,6 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 
       </div><!-- /scroll -->
 
-      <!-- 生成设置弹窗 -->
-      <div class="gcfg-mask" id="genCfgMask" onclick="closeGenCfg(event)">
-        <div class="gcfg-sheet">
-          <div class="gcfg-head">
-            <span class="gcfg-title">生成设置</span>
-            <button class="gcfg-close" onclick="closeGenCfgBtn()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-          </div>
-          <div class="gcfg-body">
-
-            <!-- 目标平台 -->
-            <div class="gcfg-section">
-              <div class="gcfg-sec-label">目标平台</div>
-              <div class="gcfg-plat-grid" id="gcfgPlatGrid">
-                <div class="gcfg-plat-item active" onclick="pickGcPlat(this,'亚马逊')">
-                  <span class="gcfg-plat-ic">🛒</span>
-                  <span class="gcfg-plat-name">亚马逊</span>
-                </div>
-                <div class="gcfg-plat-item" onclick="pickGcPlat(this,'淘宝/天猫')">
-                  <span class="gcfg-plat-ic">🏪</span>
-                  <span class="gcfg-plat-name">淘宝/天猫</span>
-                </div>
-                <div class="gcfg-plat-item" onclick="pickGcPlat(this,'京东')">
-                  <span class="gcfg-plat-ic">📦</span>
-                  <span class="gcfg-plat-name">京东</span>
-                </div>
-                <div class="gcfg-plat-item" onclick="pickGcPlat(this,'TikTok Shop')">
-                  <span class="gcfg-plat-ic">🎵</span>
-                  <span class="gcfg-plat-name">TikTok Shop</span>
-                </div>
-                <div class="gcfg-plat-item" onclick="pickGcPlat(this,'独立站')">
-                  <span class="gcfg-plat-ic">🌐</span>
-                  <span class="gcfg-plat-name">独立站</span>
-                </div>
-                <div class="gcfg-plat-item gcfg-plat-more" onclick="openPlatMore()">
-                  <span class="gcfg-plat-ic">＋</span>
-                  <span class="gcfg-plat-name" id="gcfgPlatMoreLabel">更多</span>
-                </div>
-              </div>
-
-              <!-- 更多平台面板 -->
-              <div class="gcfg-plat-more-panel" id="gcfgPlatMorePanel" style="display:none">
-                <div class="gcfg-plat-search-wrap">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted);flex-shrink:0"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                  <input id="platSearchInput" class="gcfg-plat-search" type="text" placeholder="搜索或输入平台名称…" oninput="filterPlatOpts(this.value)" />
-                </div>
-                <div class="gcfg-plat-more-grid" id="gcfgPlatMoreGrid">
-                  <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Shopify')"><span>🟢</span>Shopify</div>
-                  <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Shopee')"><span>🛍️</span>Shopee</div>
-                  <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Lazada')"><span>🏬</span>Lazada</div>
-                  <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Wish')"><span>⭐</span>Wish</div>
-                  <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Etsy')"><span>🎨</span>Etsy</div>
-                  <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Walmart')"><span>🏪</span>Walmart</div>
-                  <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'eBay')"><span>🔖</span>eBay</div>
-                  <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'拼多多')"><span>🍎</span>拼多多</div>
-                  <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'抖音小店')"><span>🎬</span>抖音小店</div>
-                  <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Temu')"><span>🌀</span>Temu</div>
-                  <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'速卖通')"><span>🌍</span>速卖通</div>
-                  <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'SHEIN')"><span>👗</span>SHEIN</div>
-                </div>
-                <div style="padding:6px 2px 2px;border-top:1px solid var(--border);margin-top:6px;">
-                  <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">自定义输入</div>
-                  <input id="gcfgPlatInput" class="gcfg-custom-input" type="text" placeholder="输入平台名称…" oninput="syncCustomPlat(this)" />
-                </div>
-              </div>
-            </div>
-
-            <div class="gcfg-divider"></div>
-
-            <!-- 输出语言 -->
-            <div class="gcfg-section">
-              <div class="gcfg-sec-label">输出语言</div>
-              <div class="gcfg-lang-row" id="gcfgLangRow">
-                <button class="gcfg-lang-btn active" onclick="pickGcLang(this,'英文')">英文</button>
-                <button class="gcfg-lang-btn" onclick="pickGcLang(this,'简体中文')">简体中文</button>
-                <button class="gcfg-lang-btn" onclick="pickGcLang(this,'繁体中文')">繁体中文</button>
-                <button class="gcfg-lang-btn" onclick="pickGcLang(this,'日文')">日文</button>
-                <button class="gcfg-lang-btn" onclick="pickGcLang(this,'德文')">德文</button>
-                <button class="gcfg-lang-btn gcfg-lang-more" id="gcfgLangMoreBtn" onclick="toggleLangMore()">+ 更多</button>
-              </div>
-              <!-- 更多语言 combobox -->
-              <div class="gcfg-lang-combo-wrap" id="gcfgLangComboWrap" style="display:none">
-                <div class="gcfg-lang-combo">
-                  <input id="gcfgLangInput" class="gcfg-lang-input" type="text" placeholder="搜索或输入语言…" oninput="filterLangOpts(this.value)" onfocus="showLangOpts()" />
-                  <svg class="gcfg-lang-input-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                  <div class="gcfg-lang-opts" id="gcfgLangOpts">
-                    <div class="gcfg-lang-opt" onclick="pickGcLangCustom('法文')">法文</div>
-                    <div class="gcfg-lang-opt" onclick="pickGcLangCustom('韩文')">韩文</div>
-                    <div class="gcfg-lang-opt" onclick="pickGcLangCustom('西班牙文')">西班牙文</div>
-                    <div class="gcfg-lang-opt" onclick="pickGcLangCustom('意大利文')">意大利文</div>
-                    <div class="gcfg-lang-opt" onclick="pickGcLangCustom('葡萄牙文')">葡萄牙文</div>
-                    <div class="gcfg-lang-opt" onclick="pickGcLangCustom('荷兰文')">荷兰文</div>
-                    <div class="gcfg-lang-opt" onclick="pickGcLangCustom('阿拉伯文')">阿拉伯文</div>
-                    <div class="gcfg-lang-opt" onclick="pickGcLangCustom('俄文')">俄文</div>
-                    <div class="gcfg-lang-opt" onclick="pickGcLangCustom('泰文')">泰文</div>
-                    <div class="gcfg-lang-opt" onclick="pickGcLangCustom('越南文')">越南文</div>
-                    <div class="gcfg-lang-opt" onclick="pickGcLangCustom('印尼文')">印尼文</div>
-                    <div class="gcfg-lang-opt" onclick="pickGcLangCustom('波兰文')">波兰文</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="gcfg-divider"></div>
-
-            <!-- AI 模型 -->
-            <div class="gcfg-section">
-              <div class="gcfg-sec-label">AI 模型</div>
-              <div class="gcfg-model-list" id="gcfgModelList">
-
-                <!-- OpenAI GPT-Image 2 -->
-                <div class="gcfg-model-item active" onclick="pickGcModel(this,'GPT-Image 2')">
-                  <div class="gcfg-model-ic" style="background:#000;">
-                    <!-- OpenAI 官方 logo -->
-                    <svg width="18" height="18" viewBox="0 0 41 41" fill="#fff" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M37.532 16.87a9.963 9.963 0 0 0-.856-8.184 10.078 10.078 0 0 0-10.855-4.835 9.964 9.964 0 0 0-6.211-3.371 10.079 10.079 0 0 0-10.172 4.934 9.964 9.964 0 0 0-6.67 4.834 10.079 10.079 0 0 0 1.24 11.817 9.965 9.965 0 0 0 .856 8.185 10.079 10.079 0 0 0 10.855 4.835 9.965 9.965 0 0 0 6.211 3.371 10.079 10.079 0 0 0 10.172-4.934 9.964 9.964 0 0 0 6.67-4.834 10.079 10.079 0 0 0-1.24-11.818zm-15.114 21.164a7.473 7.473 0 0 1-4.801-1.731c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 0 0 .655-1.134V19.054l3.366 1.944a.12.12 0 0 1 .066.092v9.299a7.505 7.505 0 0 1-7.487 7.645zm-16.134-6.867a7.471 7.471 0 0 1-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 0 0 1.308 0l9.724-5.614v3.888a.12.12 0 0 1-.048.103l-8.051 4.649a7.504 7.504 0 0 1-10.24-2.744zm-2.09-17.51a7.47 7.47 0 0 1 3.897-3.287c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 0 0 .654 1.132l9.723 5.614-3.366 1.944a.12.12 0 0 1-.114.012L8.048 23.832a7.504 7.504 0 0 1-3.854-10.185zm27.658 6.437l-9.724-5.615 3.367-1.943a.121.121 0 0 1 .114-.012l8.048 4.648a7.498 7.498 0 0 1-1.158 13.528v-9.476a1.293 1.293 0 0 0-.647-1.13zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 0 0-1.308 0l-9.723 5.614v-3.888a.12.12 0 0 1 .048-.103l8.05-4.645a7.497 7.497 0 0 1 11.135 7.763zm-21.063 6.929l-3.367-1.944a.12.12 0 0 1-.065-.092v-9.299a7.497 7.497 0 0 1 12.293-5.756 6.94 6.94 0 0 0-.236.134l-7.965 4.6a1.294 1.294 0 0 0-.654 1.132l-.006 11.225zm1.829-3.943l4.33-2.501 4.332 2.5v4.999l-4.331 2.5-4.331-2.5V18.06z"/>
-                    </svg>
-                  </div>
-                  <div class="gcfg-model-info">
-                    <div class="gcfg-model-name">GPT-Image 2</div>
-                    <div class="gcfg-model-desc">OpenAI 出品 · 细节丰富 · 商品还原度高</div>
-                  </div>
-                  <div class="gcfg-radio"></div>
-                </div>
-
-                <!-- Google Gemini -->
-                <div class="gcfg-model-item" onclick="pickGcModel(this,'Gemini')">
-                  <div class="gcfg-model-ic" style="background:#fff;border:1.5px solid #e8e8e8;">
-                    <!-- Gemini 渐变星形 -->
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                        <linearGradient id="gm1" x1="0" y1="0" x2="1" y2="1">
-                          <stop offset="0%" stop-color="#4285F4"/>
-                          <stop offset="100%" stop-color="#9B72CB"/>
-                        </linearGradient>
-                      </defs>
-                      <path d="M14 2C14 2 14.8 8.5 17.5 11.5C20.2 14.5 26 14 26 14C26 14 20.2 13.5 17.5 16.5C14.8 19.5 14 26 14 26C14 26 13.2 19.5 10.5 16.5C7.8 13.5 2 14 2 14C2 14 7.8 14.5 10.5 11.5C13.2 8.5 14 2 14 2Z" fill="url(#gm1)"/>
-                    </svg>
-                  </div>
-                  <div class="gcfg-model-info">
-                    <div class="gcfg-model-name">Gemini Imagen</div>
-                    <div class="gcfg-model-desc">Google 出品 · 色彩鲜艳 · 场景理解强</div>
-                  </div>
-                  <div class="gcfg-radio"></div>
-                </div>
-
-                <!-- 通义万象 Tongyi -->
-                <div class="gcfg-model-item" onclick="pickGcModel(this,'通义万象')">
-                  <div class="gcfg-model-ic" style="background:linear-gradient(135deg,#FF6A00,#FF8C00);">
-                    <!-- 通义 "通" 字简化图标 -->
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="3" y="4" width="18" height="2.5" rx="1.25" fill="#fff"/>
-                      <rect x="10.75" y="4" width="2.5" height="14" rx="1.25" fill="#fff"/>
-                      <path d="M6 10.5 Q12 18 18 10.5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
-                    </svg>
-                  </div>
-                  <div class="gcfg-model-info">
-                    <div class="gcfg-model-name">通义万象</div>
-                    <div class="gcfg-model-desc">阿里云出品 · 中文语义强 · 电商专项优化</div>
-                  </div>
-                  <div class="gcfg-radio"></div>
-                </div>
-
-              </div>
-            </div>
-
-            <div class="gcfg-divider"></div>
-
-            <!-- 图片画质 -->
-            <div class="gcfg-section">
-              <div class="gcfg-sec-label">图片画质</div>
-              <div class="gcfg-seg" id="gcfgSeg">
-                <button class="gcfg-seg-btn active" onclick="pickGcRes(this,'标准1K')" type="button">
-                  1K<span class="gcfg-seg-sub">标准</span>
-                </button>
-                <button class="gcfg-seg-btn" onclick="pickGcRes(this,'高清2K')" type="button">
-                  2K<span class="gcfg-seg-sub">高清</span>
-                </button>
-                <button class="gcfg-seg-btn" onclick="pickGcRes(this,'超清4K')" type="button">
-                  4K<span class="gcfg-seg-sub">超清</span>
-                </button>
-              </div>
-            </div>
-
-          </div>
-          <div class="gcfg-foot">
-            <button class="gcfg-cancel" onclick="closeGenCfgBtn()">取消</button>
-            <button class="gcfg-save" onclick="saveGenCfg()">保存设置</button>
-          </div>
-        </div>
-      </div>
-
       <!-- 底部按钮 -->
       <div class="left-foot">
         <button class="btn-gen disabled" id="genBtn" onclick="startGen()">
@@ -1791,7 +2317,7 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
       </div>
     </div>
 
-    <!-- ═══ LEFT · A+高级生图 ═══ -->
+    <!-- ═══ LEFT · 电商套图 ═══ -->
     <div class="left" id="leftAplusAdv" style="display:none">
       <div class="left-scroll">
 
@@ -1869,26 +2395,39 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
           </div>
         </div>
 
-        <!-- 生成设置（单入口按钮） -->
+        <!-- 生成设置 + 板块设置 + 生成模式 -->
         <div class="sec-block" style="margin-bottom:14px;">
-          <button class="gen-cfg-btn" onclick="openGenCfg()">
-            <div class="gen-cfg-btn-l">
-              <div class="gen-cfg-btn-ic">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          <div class="suite-cfg-btns">
+            <button class="gen-cfg-btn" onclick="openGenCfg()">
+              <div class="gen-cfg-btn-l">
+                <div class="gen-cfg-btn-ic">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+                </div>
+                <div>
+                  <div class="gen-cfg-btn-title">生成设置</div>
+                  <div class="gen-cfg-btn-sub" id="cfgSummaryAdv">亚马逊 · 英文 · GPT-Image 2 · 标准1K</div>
+                </div>
               </div>
-              <div>
-                <div class="gen-cfg-btn-title">生成设置</div>
-                <div class="gen-cfg-btn-sub" id="cfgSummaryAdv">亚马逊 · 英文 · GPT-Image 2 · 标准1K</div>
-              </div>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:#bbb;flex-shrink:0"><polyline points="9 6 15 12 9 18"/></svg>
+            </button>
+          </div>
+
+          <!-- 生成模式切换 -->
+          <div class="gen-mode-row">
+            <span class="gen-mode-label">生成模式</span>
+            <div class="gen-mode-seg">
+              <button class="gen-mode-btn active" id="genModeCustomBtn" onclick="switchGenMode('custom')">自定义</button>
+              <button class="gen-mode-btn" id="genModeAiBtn" onclick="switchGenMode('ai')">
+                <span style="background:linear-gradient(135deg,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">✦ AI 智能</span>
+              </button>
             </div>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:#bbb;flex-shrink:0"><polyline points="9 6 15 12 9 18"/></svg>
-          </button>
+          </div>
         </div>
 
-        <!-- 详情图配置 -->
+        <!-- 套图配置（自定义模式） -->
         <div class="sec-block" id="detailCfgBlockAdv">
           <div class="sec-hd">
-            <h3>详情图配置</h3>
+            <h3>配置</h3>
             <div class="tip">?</div>
           </div>
           <div class="mod-hd-row">
@@ -1908,95 +2447,121 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 
           <div class="module-grid" id="modGridAdv">
 
-            <div class="mod-card sel" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card sel" draggable="true" data-stype="主图" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">首屏主视觉</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">传递核心价值</span>
+              <span class="mod-stype-tag">主图</span>
+              <span class="mod-name">首屏主视觉</span>
+              <span class="mod-desc">传递核心价值</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
-            <div class="mod-card sel" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card sel" draggable="true" data-stype="主图" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">核心卖点图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">突出差异优势</span>
+              <span class="mod-stype-tag">主图</span>
+              <span class="mod-name">核心卖点图</span>
+              <span class="mod-desc">突出差异优势</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
-            <div class="mod-card sel" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card sel" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">使用场景图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">呈现真实使用场景</span>
+              <span class="mod-stype-tag stype-detail">详情</span>
+              <span class="mod-name">使用场景图</span>
+              <span class="mod-desc">呈现真实使用场景</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
-            <div class="mod-card sel" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card sel" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">多角度图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">多角度呈现外观</span>
+              <span class="mod-stype-tag stype-detail">详情</span>
+              <span class="mod-name">多角度图</span>
+              <span class="mod-desc">多角度呈现外观</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
-            <div class="mod-card sel" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card sel" draggable="true" data-stype="SKU" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">场景氛围图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">展示使用场景</span>
+              <span class="mod-stype-tag stype-sku">SKU</span>
+              <span class="mod-name">场景氛围图</span>
+              <span class="mod-desc">展示使用场景</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">商品细节图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">放大材质与工艺</span>
+              <span class="mod-stype-tag stype-detail">详情</span>
+              <span class="mod-name">商品细节图</span>
+              <span class="mod-desc">放大材质与工艺</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" data-stype="车图" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">品牌故事图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">传达品牌理念</span>
+              <span class="mod-stype-tag stype-promo">车图</span>
+              <span class="mod-name">品牌故事图</span>
+              <span class="mod-desc">传达品牌理念</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">尺寸/容量/尺码图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">展示规格信息</span>
+              <span class="mod-stype-tag stype-detail">详情</span>
+              <span class="mod-name">尺寸/容量/尺码图</span>
+              <span class="mod-desc">展示规格信息</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">效果对比图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">使用前后效果对比</span>
+              <span class="mod-stype-tag stype-detail">详情</span>
+              <span class="mod-name">效果对比图</span>
+              <span class="mod-desc">使用前后效果对比</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">详细规格/参数表</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">展示详细商品数据</span>
+              <span class="mod-stype-tag stype-detail">详情</span>
+              <span class="mod-name">详细规格/参数表</span>
+              <span class="mod-desc">展示详细商品数据</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" data-stype="详情" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">工艺制作图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">展示工艺制作过程</span>
+              <span class="mod-stype-tag stype-detail">详情</span>
+              <span class="mod-name">工艺制作图</span>
+              <span class="mod-desc">展示工艺制作过程</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" data-stype="主图" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">配件/赠品图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">明确收货的所有物品</span>
+              <span class="mod-stype-tag">主图</span>
+              <span class="mod-name">配件/赠品图</span>
+              <span class="mod-desc">明确收货的所有物品</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
-            <div class="mod-card" draggable="true" onclick="toggleMod(this)" ondblclick="editModName(event,this)">
+            <div class="mod-card" draggable="true" data-stype="SKU" onclick="toggleMod(this)" ondblclick="openSuiteCfg(event,this)">
               <button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               <div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-              <span class="mod-name" ondblclick="editModName(event,this)">系列展示图</span>
-              <span class="mod-desc" ondblclick="editModDesc(event,this)">多色或多SKU展示</span>
+              <span class="mod-stype-tag stype-sku">SKU</span>
+              <span class="mod-name">系列展示图</span>
+              <span class="mod-desc">多色或多SKU展示</span>
+              <div class="mod-ref-dot"></div>
             </div>
 
             <!-- 第 14 格：更多 | + 添加 -->
@@ -2006,7 +2571,7 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
                 <span style="font-size:11px;font-weight:500;color:var(--muted);">更多</span>
               </div>
               <div class="mod-more-sep"></div>
-              <div class="mod-more-right" onclick="addNewMod()">
+              <div class="mod-more-right" onclick="addNewSuiteCard()">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 <span style="font-size:10px;font-weight:500;">添加</span>
               </div>
@@ -2052,7 +2617,7 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 
       <!-- 底部按钮 -->
       <div class="left-foot">
-        <button class="btn-gen disabled" id="genBtnAdv" onclick="startGen()">
+        <button class="btn-gen disabled" id="genBtnAdv" onclick="startGenAdv()">
           <span id="genBtnTxtAdv">请上传产品图</span>
           <span class="cost-chip" id="genCostAdv" style="display:none">128 灵石</span>
         </button>
@@ -2207,6 +2772,376 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
   <div class="stool">🤖</div>
 </div>
 
+<!-- 生成设置弹窗（全局层） -->
+<!-- ══ AI 智能模式弹窗 ══ -->
+<div class="ipln-mask" id="aiModeMask" onclick="closeAiModeMask(event)">
+  <div class="ipln-sheet" onclick="event.stopPropagation()" style="max-height:82vh;">
+    <div class="ipln-handle"></div>
+
+    <!-- 头部 -->
+    <div class="ipln-head" style="padding-bottom:12px;">
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <span class="ipln-title" style="display:flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+          AI 智能生成
+        </span>
+        <span style="font-size:11px;color:#bbb;">配置要生成的图片类型，AI 自动分析规划</span>
+      </div>
+      <button class="ipln-close" onclick="closeAiModeMask()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- 板块列表 -->
+    <div class="ipln-body" id="aiModeIplnList" style="flex:1;"></div>
+
+    <!-- 自定义添加 -->
+    <div class="ipln-add-zone">
+      <input class="ipln-add-field" id="aiModeNewName" placeholder="自定义类型，如 SKU图" maxlength="10"
+        onkeydown="if(event.key==='Enter')aiModeAddRow()" />
+      <button class="ipln-add-go" onclick="aiModeAddRow()">添加</button>
+    </div>
+
+    <!-- 底部按钮 -->
+    <div class="ipln-foot">
+      <!-- 分析中状态 -->
+      <div id="aiModeAnalyzing" style="display:none;align-items:center;justify-content:center;gap:8px;padding:12px 0;">
+        <div class="ipln-ai-spinner"></div>
+        <span style="font-size:13px;color:#6366f1;font-weight:600;">AI 正在分析，规划生成方案...</span>
+      </div>
+      <!-- 正常按钮 -->
+      <button class="ipln-save-btn" id="aiModeStartBtn"
+        style="background:linear-gradient(135deg,#6366f1,#7c3aed);"
+        onclick="aiModeStartAnalyze()">
+        <span style="display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+          开始分析
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 板块设置弹窗 ══ -->
+<div class="ipln-mask" id="imgPlanMask" onclick="closeImgPlanCfg(event)">
+  <div class="ipln-sheet" onclick="event.stopPropagation()">
+    <div class="ipln-handle"></div>
+    <div class="ipln-head">
+      <span class="ipln-title">板块设置</span>
+      <button class="ipln-close" onclick="closeImgPlanCfg()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- 模式 Tab -->
+    <div class="ipln-tabs">
+      <button class="ipln-tab active" id="iplnTabCustom" onclick="iplnSwitchTab('custom')">自定义</button>
+      <button class="ipln-tab" id="iplnTabAi" onclick="iplnSwitchTab('ai')">
+        <span style="background:linear-gradient(135deg,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">AI 智能</span>
+      </button>
+    </div>
+
+    <!-- 自定义面板 -->
+    <div id="iplnPanelCustom" style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
+      <div class="ipln-body" id="iplnBody"></div>
+      <div class="ipln-add-zone">
+        <input class="ipln-add-field" id="iplnNewName" placeholder="自定义类型名，如：SKU图" maxlength="10"
+          onkeydown="if(event.key==='Enter')addIplnRow()" />
+        <button class="ipln-add-go" onclick="addIplnRow()">添加</button>
+      </div>
+      <div class="ipln-foot">
+        <button class="ipln-save-btn" onclick="saveImgPlanCfg()">确定</button>
+      </div>
+    </div>
+
+    <!-- AI 智能面板 -->
+    <div id="iplnPanelAi" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
+      <div class="ipln-ai-panel">
+        <div class="ipln-ai-label">描述你要生成的套图需求</div>
+        <textarea class="ipln-ai-ta" id="iplnAiPrompt"
+          placeholder="例如：我有一款无线蓝牙耳机，面向年轻人，需要亚马逊主图3张、详情图5张，风格简洁现代，背景干净..."></textarea>
+        <button class="ipln-ai-gen-btn" onclick="iplnAiGenerate()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+          AI 生成方案
+        </button>
+      </div>
+
+      <!-- loading -->
+      <div class="ipln-ai-loading" id="iplnAiLoading">
+        <div class="ipln-ai-spinner"></div>
+        <span>AI 正在分析，生成板块方案...</span>
+      </div>
+
+      <!-- 结果：复用同一个列表渲染，结果展示后可直接确认 -->
+      <div class="ipln-ai-result" id="iplnAiResult">
+        <div class="ipln-ai-result-hd">AI 建议方案</div>
+        <div class="ipln-body" id="iplnAiBody" style="flex:1;"></div>
+      </div>
+
+      <div class="ipln-foot" id="iplnAiFoot" style="display:none;">
+        <button class="ipln-save-btn" style="background:#6366f1;" onclick="iplnAiConfirm()">应用此方案</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="gcfg-mask" id="genCfgMask" onclick="closeGenCfg(event)">
+  <div class="gcfg-sheet">
+    <div class="gcfg-head">
+      <span class="gcfg-title">生成设置</span>
+      <button class="gcfg-close" onclick="closeGenCfgBtn()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="gcfg-body">
+
+      <!-- 目标平台 -->
+      <div class="gcfg-section">
+        <div class="gcfg-sec-label">目标平台</div>
+        <div class="gcfg-plat-grid" id="gcfgPlatGrid">
+          <div class="gcfg-plat-item active" onclick="pickGcPlat(this,'亚马逊')">
+            <span class="gcfg-plat-ic">🛒</span>
+            <span class="gcfg-plat-name">亚马逊</span>
+          </div>
+          <div class="gcfg-plat-item" onclick="pickGcPlat(this,'淘宝/天猫')">
+            <span class="gcfg-plat-ic">🏪</span>
+            <span class="gcfg-plat-name">淘宝/天猫</span>
+          </div>
+          <div class="gcfg-plat-item" onclick="pickGcPlat(this,'京东')">
+            <span class="gcfg-plat-ic">📦</span>
+            <span class="gcfg-plat-name">京东</span>
+          </div>
+          <div class="gcfg-plat-item" onclick="pickGcPlat(this,'TikTok Shop')">
+            <span class="gcfg-plat-ic">🎵</span>
+            <span class="gcfg-plat-name">TikTok Shop</span>
+          </div>
+          <div class="gcfg-plat-item" onclick="pickGcPlat(this,'独立站')">
+            <span class="gcfg-plat-ic">🌐</span>
+            <span class="gcfg-plat-name">独立站</span>
+          </div>
+          <div class="gcfg-plat-item gcfg-plat-more" onclick="openPlatMore()">
+            <span class="gcfg-plat-ic">＋</span>
+            <span class="gcfg-plat-name" id="gcfgPlatMoreLabel">更多</span>
+          </div>
+        </div>
+        <!-- 更多平台面板 -->
+        <div class="gcfg-plat-more-panel" id="gcfgPlatMorePanel" style="display:none">
+          <div class="gcfg-plat-search-wrap">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted);flex-shrink:0"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="platSearchInput" class="gcfg-plat-search" type="text" placeholder="搜索或输入平台名称…" oninput="filterPlatOpts(this.value)" />
+          </div>
+          <div class="gcfg-plat-more-grid" id="gcfgPlatMoreGrid">
+            <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Shopify')"><span>🟢</span>Shopify</div>
+            <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Shopee')"><span>🛍️</span>Shopee</div>
+            <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Lazada')"><span>🏬</span>Lazada</div>
+            <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Wish')"><span>⭐</span>Wish</div>
+            <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Etsy')"><span>🎨</span>Etsy</div>
+            <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Walmart')"><span>🏪</span>Walmart</div>
+            <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'eBay')"><span>🔖</span>eBay</div>
+            <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'拼多多')"><span>🍎</span>拼多多</div>
+            <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'抖音小店')"><span>🎬</span>抖音小店</div>
+            <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'Temu')"><span>🌀</span>Temu</div>
+            <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'速卖通')"><span>🌍</span>速卖通</div>
+            <div class="gcfg-plat-more-item" onclick="pickGcPlatMore(this,'SHEIN')"><span>👗</span>SHEIN</div>
+          </div>
+          <div style="padding:6px 2px 2px;border-top:1px solid var(--border);margin-top:6px;">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">自定义输入</div>
+            <input id="gcfgPlatInput" class="gcfg-custom-input" type="text" placeholder="输入平台名称…" oninput="syncCustomPlat(this)" />
+          </div>
+        </div>
+      </div>
+
+      <div class="gcfg-divider"></div>
+
+      <!-- 输出语言 -->
+      <div class="gcfg-section">
+        <div class="gcfg-sec-label">输出语言</div>
+        <div class="gcfg-lang-row" id="gcfgLangRow">
+          <button class="gcfg-lang-btn active" onclick="pickGcLang(this,'英文')">英文</button>
+          <button class="gcfg-lang-btn" onclick="pickGcLang(this,'简体中文')">简体中文</button>
+          <button class="gcfg-lang-btn" onclick="pickGcLang(this,'繁体中文')">繁体中文</button>
+          <button class="gcfg-lang-btn" onclick="pickGcLang(this,'日文')">日文</button>
+          <button class="gcfg-lang-btn" onclick="pickGcLang(this,'德文')">德文</button>
+          <button class="gcfg-lang-btn gcfg-lang-more" id="gcfgLangMoreBtn" onclick="toggleLangMore()">+ 更多</button>
+        </div>
+        <div class="gcfg-lang-combo-wrap" id="gcfgLangComboWrap" style="display:none">
+          <div class="gcfg-lang-combo">
+            <input id="gcfgLangInput" class="gcfg-lang-input" type="text" placeholder="搜索或输入语言…" oninput="filterLangOpts(this.value)" onfocus="showLangOpts()" />
+            <svg class="gcfg-lang-input-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <div class="gcfg-lang-opts" id="gcfgLangOpts">
+              <div class="gcfg-lang-opt" onclick="pickGcLangCustom('法文')">法文</div>
+              <div class="gcfg-lang-opt" onclick="pickGcLangCustom('韩文')">韩文</div>
+              <div class="gcfg-lang-opt" onclick="pickGcLangCustom('西班牙文')">西班牙文</div>
+              <div class="gcfg-lang-opt" onclick="pickGcLangCustom('意大利文')">意大利文</div>
+              <div class="gcfg-lang-opt" onclick="pickGcLangCustom('葡萄牙文')">葡萄牙文</div>
+              <div class="gcfg-lang-opt" onclick="pickGcLangCustom('荷兰文')">荷兰文</div>
+              <div class="gcfg-lang-opt" onclick="pickGcLangCustom('阿拉伯文')">阿拉伯文</div>
+              <div class="gcfg-lang-opt" onclick="pickGcLangCustom('俄文')">俄文</div>
+              <div class="gcfg-lang-opt" onclick="pickGcLangCustom('泰文')">泰文</div>
+              <div class="gcfg-lang-opt" onclick="pickGcLangCustom('越南文')">越南文</div>
+              <div class="gcfg-lang-opt" onclick="pickGcLangCustom('印尼文')">印尼文</div>
+              <div class="gcfg-lang-opt" onclick="pickGcLangCustom('波兰文')">波兰文</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gcfg-divider"></div>
+
+      <!-- AI 模型 -->
+      <div class="gcfg-section">
+        <div class="gcfg-sec-label">AI 模型</div>
+        <div class="gcfg-model-list" id="gcfgModelList">
+          <div class="gcfg-model-item active" onclick="pickGcModel(this,'GPT-Image 2')">
+            <div class="gcfg-model-ic" style="background:#000;">
+              <svg width="18" height="18" viewBox="0 0 41 41" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M37.532 16.87a9.963 9.963 0 0 0-.856-8.184 10.078 10.078 0 0 0-10.855-4.835 9.964 9.964 0 0 0-6.211-3.371 10.079 10.079 0 0 0-10.172 4.934 9.964 9.964 0 0 0-6.67 4.834 10.079 10.079 0 0 0 1.24 11.817 9.965 9.965 0 0 0 .856 8.185 10.079 10.079 0 0 0 10.855 4.835 9.965 9.965 0 0 0 6.211 3.371 10.079 10.079 0 0 0 10.172-4.934 9.964 9.964 0 0 0 6.67-4.834 10.079 10.079 0 0 0-1.24-11.818zm-15.114 21.164a7.473 7.473 0 0 1-4.801-1.731c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 0 0 .655-1.134V19.054l3.366 1.944a.12.12 0 0 1 .066.092v9.299a7.505 7.505 0 0 1-7.487 7.645zm-16.134-6.867a7.471 7.471 0 0 1-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 0 0 1.308 0l9.724-5.614v3.888a.12.12 0 0 1-.048.103l-8.051 4.649a7.504 7.504 0 0 1-10.24-2.744zm-2.09-17.51a7.47 7.47 0 0 1 3.897-3.287c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 0 0 .654 1.132l9.723 5.614-3.366 1.944a.12.12 0 0 1-.114.012L8.048 23.832a7.504 7.504 0 0 1-3.854-10.185zm27.658 6.437l-9.724-5.615 3.367-1.943a.121.121 0 0 1 .114-.012l8.048 4.648a7.498 7.498 0 0 1-1.158 13.528v-9.476a1.293 1.293 0 0 0-.647-1.13zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 0 0-1.308 0l-9.723 5.614v-3.888a.12.12 0 0 1 .048-.103l8.05-4.645a7.497 7.497 0 0 1 11.135 7.763zm-21.063 6.929l-3.367-1.944a.12.12 0 0 1-.065-.092v-9.299a7.497 7.497 0 0 1 12.293-5.756 6.94 6.94 0 0 0-.236.134l-7.965 4.6a1.294 1.294 0 0 0-.654 1.132l-.006 11.225zm1.829-3.943l4.33-2.501 4.332 2.5v4.999l-4.331 2.5-4.331-2.5V18.06z"/></svg>
+            </div>
+            <div class="gcfg-model-info">
+              <div class="gcfg-model-name">GPT-Image 2</div>
+              <div class="gcfg-model-desc">OpenAI 出品 · 细节丰富 · 商品还原度高</div>
+            </div>
+            <div class="gcfg-radio"></div>
+          </div>
+          <div class="gcfg-model-item" onclick="pickGcModel(this,'Gemini')">
+            <div class="gcfg-model-ic" style="background:#fff;border:1.5px solid #e8e8e8;">
+              <svg width="20" height="20" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gm1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4285F4"/><stop offset="100%" stop-color="#9B72CB"/></linearGradient></defs><path d="M14 2C14 2 14.8 8.5 17.5 11.5C20.2 14.5 26 14 26 14C26 14 20.2 13.5 17.5 16.5C14.8 19.5 14 26 14 26C14 26 13.2 19.5 10.5 16.5C7.8 13.5 2 14 2 14C2 14 7.8 14.5 10.5 11.5C13.2 8.5 14 2 14 2Z" fill="url(#gm1)"/></svg>
+            </div>
+            <div class="gcfg-model-info">
+              <div class="gcfg-model-name">Gemini Imagen</div>
+              <div class="gcfg-model-desc">Google 出品 · 色彩鲜艳 · 场景理解强</div>
+            </div>
+            <div class="gcfg-radio"></div>
+          </div>
+          <div class="gcfg-model-item" onclick="pickGcModel(this,'通义万象')">
+            <div class="gcfg-model-ic" style="background:linear-gradient(135deg,#FF6A00,#FF8C00);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="2.5" rx="1.25" fill="#fff"/><rect x="10.75" y="4" width="2.5" height="14" rx="1.25" fill="#fff"/><path d="M6 10.5 Q12 18 18 10.5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            </div>
+            <div class="gcfg-model-info">
+              <div class="gcfg-model-name">通义万象</div>
+              <div class="gcfg-model-desc">阿里云出品 · 中文语义强 · 电商专项优化</div>
+            </div>
+            <div class="gcfg-radio"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gcfg-divider"></div>
+
+      <!-- 图片画质 -->
+      <div class="gcfg-section">
+        <div class="gcfg-sec-label">图片画质</div>
+        <div class="gcfg-seg" id="gcfgSeg">
+          <button class="gcfg-seg-btn active" onclick="pickGcRes(this,'标准1K')" type="button">1K<span class="gcfg-seg-sub">标准</span></button>
+          <button class="gcfg-seg-btn" onclick="pickGcRes(this,'高清2K')" type="button">2K<span class="gcfg-seg-sub">高清</span></button>
+          <button class="gcfg-seg-btn" onclick="pickGcRes(this,'超清4K')" type="button">4K<span class="gcfg-seg-sub">超清</span></button>
+        </div>
+      </div>
+
+    </div>
+    <div class="gcfg-foot">
+      <button class="gcfg-cancel" onclick="closeGenCfgBtn()">取消</button>
+      <button class="gcfg-save" onclick="saveGenCfg()">保存设置</button>
+    </div>
+  </div>
+</div>
+
+<!-- 板块配置弹窗 -->
+<div class="scfg-mask" id="scfgMask" onclick="closeScfg(event)">
+  <div class="scfg-sheet" onclick="event.stopPropagation()">
+    <div class="scfg-head">
+      <span class="scfg-head-title">板块配置</span>
+      <button class="scfg-close-btn" onclick="closeScfg()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="scfg-body">
+      <!-- 图片类型 -->
+      <div class="scfg-section">
+        <span class="scfg-label">图片类型</span>
+        <div class="scfg-combo" id="scfgTypeCombo">
+          <div class="scfg-combo-input-wrap" onclick="toggleScfgTypeDrop(event)">
+            <input class="scfg-combo-input" id="scfgTypeInput" placeholder="请选择，或直接输入" oninput="filterScfgTypeOpts(this.value)" autocomplete="off" />
+            <svg class="scfg-combo-arrow" id="scfgComboArrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="scfg-combo-drop" id="scfgTypeDrop">
+            <div class="scfg-combo-opt" data-v="主图" onclick="pickScfgTypeOpt(this)">主图</div>
+            <div class="scfg-combo-opt" data-v="详情" onclick="pickScfgTypeOpt(this)">详情</div>
+            <div class="scfg-combo-opt" data-v="SKU"  onclick="pickScfgTypeOpt(this)">SKU</div>
+            <div class="scfg-combo-opt" data-v="车图" onclick="pickScfgTypeOpt(this)">车图</div>
+          </div>
+        </div>
+      </div>
+      <!-- 图片尺寸 -->
+      <div class="scfg-section">
+        <span class="scfg-label">图片尺寸</span>
+        <div class="scfg-ratio-row" id="scfgRatioRow">
+          <button class="scfg-ratio-chip on" data-r="1:1"  onclick="pickScfgRatio(this)">1:1</button>
+          <button class="scfg-ratio-chip"    data-r="9:16" onclick="pickScfgRatio(this)">9:16</button>
+          <button class="scfg-ratio-chip"    data-r="16:9" onclick="pickScfgRatio(this)">16:9</button>
+          <button class="scfg-ratio-chip"    data-r="3:4"  onclick="pickScfgRatio(this)">3:4</button>
+          <button class="scfg-ratio-chip"    data-r="4:3"  onclick="pickScfgRatio(this)">4:3</button>
+        </div>
+      </div>
+      <!-- 板块名称 -->
+      <div class="scfg-section">
+        <span class="scfg-label">板块名称</span>
+        <input class="scfg-name-input" id="scfgName" placeholder="例：首屏主视觉" />
+      </div>
+      <!-- 参考图 -->
+      <div class="scfg-section">
+        <span class="scfg-label">参考图</span>
+        <div class="scfg-ref-zone" onclick="triggerScfgRef()">
+          <input type="file" id="scfgRefFile" accept="image/*" style="display:none" onchange="loadScfgRef(this)">
+          <span class="scfg-ref-placeholder" id="scfgRefPlaceholder">点击上传参考图</span>
+          <img class="scfg-ref-preview" id="scfgRefImg" />
+          <button class="scfg-ref-clear" id="scfgRefClear" onclick="clearScfgRef(event)">×</button>
+        </div>
+      </div>
+      <!-- 要求说明 -->
+      <div class="scfg-section">
+        <span class="scfg-label">要求说明</span>
+        <textarea class="scfg-textarea" id="scfgDesc" placeholder="例：突出核心卖点，背景简洁，高饱和度色彩…"></textarea>
+      </div>
+    </div>
+    <div class="scfg-foot">
+      <button class="scfg-btn-cancel" onclick="closeScfg()">取消</button>
+      <button class="scfg-btn-save"   onclick="saveScfg()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 添加套图弹窗 -->
+<div class="suite-add-mask" id="suiteAddMask" onclick="closeSuiteAdd(event)">
+  <div class="suite-add-sheet" onclick="event.stopPropagation()">
+    <div class="suite-add-head">
+      <span class="suite-add-title">添加套图</span>
+      <button class="scfg-close-btn" onclick="closeSuiteAdd()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="suite-add-body">
+      <span class="suite-add-label">图片类型</span>
+      <div class="suite-add-types">
+        <button class="sa-type-btn on" data-v="主图"  onclick="pickSaType(this)">主图</button>
+        <button class="sa-type-btn"    data-v="详情"  onclick="pickSaType(this)">详情</button>
+        <button class="sa-type-btn"    data-v="推广"  onclick="pickSaType(this)">推广</button>
+        <button class="sa-type-btn"    data-v="场景"  onclick="pickSaType(this)">场景</button>
+        <button class="sa-type-btn"    data-v="对比"  onclick="pickSaType(this)">对比</button>
+        <button class="sa-type-btn"    data-v="其他"  onclick="pickSaType(this)">其他</button>
+      </div>
+      <span class="suite-add-label">套图名称</span>
+      <input class="suite-add-input" id="suiteAddName" placeholder="例：首屏主视觉" />
+      <span class="suite-add-label">备注</span>
+      <input class="suite-add-input" id="suiteAddNote" placeholder="可选备注…" style="margin-bottom:0" />
+    </div>
+    <div class="suite-add-foot">
+      <button class="suite-add-cancel" onclick="closeSuiteAdd()">取消</button>
+      <button class="suite-add-save"   onclick="confirmSuiteAdd()">添加</button>
+    </div>
+  </div>
+</div>
+
 <!-- AI帮写弹层 -->
 <div class="aiw-mask" id="aiwMask" onclick="closeAiWrite(event)">
   <div class="aiw-panel" onclick="event.stopPropagation()">
@@ -2264,6 +3199,407 @@ function togSel(groupId,el){
 
 /* ── 生成设置弹窗 ── */
 var _gcfg={plat:'亚马逊',lang:'英文',model:'GPT-Image 2',res:'标准1K'};
+/* ── 板块设置弹窗 ── */
+/* ── 板块设置 数据 & 渲染 ── */
+var _iplnData = [
+  {key:'主图',   on:true,  count:3, ratio:'1:1',  req:''},
+  {key:'详情图', on:true,  count:5, ratio:'9:16', req:''},
+  {key:'白底图', on:false, count:1, ratio:'1:1',  req:''},
+  {key:'推广图', on:false, count:1, ratio:'16:9', req:''},
+  {key:'活动图', on:false, count:1, ratio:'16:9', req:''},
+];
+var _iplnRatios = ['1:1','3:4','9:16','16:9','4:3'];
+
+function _iplnBuildRow(d, idx){
+  var optsHtml = _iplnRatios.map(function(r){
+    return '<option value="'+r+'"'+(r===d.ratio?' selected':'')+'>'+r+'</option>';
+  }).join('');
+  var selHtml = '<div class="ipln-sz">'
+    +'<select class="ipln-sz-sel" onchange="iplnSetRatio('+idx+',this.value)">'+optsHtml+'</select>'
+    +'<svg class="ipln-sz-arr" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
+    +'</div>';
+  return '<div class="ipln-row'+(d.on?'':' off')+'" id="iplnRow'+idx+'">'
+    +'<label class="ipln-tog" onclick="event.stopPropagation()">'
+    +'<input type="checkbox"'+(d.on?' checked':'')+' onchange="iplnToggle(this,'+idx+')">'
+    +'<span class="ipln-tog-track"></span>'
+    +'<span class="ipln-tog-thumb"></span>'
+    +'</label>'
+    +'<span class="ipln-rname">'+d.key+'</span>'
+    +'<div class="ipln-rctrl">'
+    +'<div class="ipln-st">'
+    +'<button class="ipln-st-btn" onclick="iplnStep('+idx+',-1)">−</button>'
+    +'<span class="ipln-st-n" id="iplnN'+idx+'">'+d.count+'</span>'
+    +'<button class="ipln-st-btn" onclick="iplnStep('+idx+',1)">+</button>'
+    +'</div>'
+    +selHtml
+    +'<button class="ipln-exp" id="iplnExp'+idx+'" onclick="iplnToggleReq('+idx+')" title="生成要求">'
+    +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
+    +'</button>'
+    +(d.custom?'<button onclick="iplnRemove('+idx+')" style="border:none;background:none;color:#ddd;font-size:16px;cursor:pointer;padding:0;line-height:1;margin-left:2px;">×</button>':'')
+    +'</div>'
+    +'</div>'
+    +'<div class="ipln-req-zone" id="iplnReq'+idx+'">'
+    +'<textarea class="ipln-req-input" placeholder="'+d.key+'生成要求（选填）..." '
+    +'onchange="iplnSetReq('+idx+',this.value)">'+(d.req||'')+'</textarea>'
+    +'</div>';
+}
+
+function _iplnRender(){
+  var html = '';
+  _iplnData.forEach(function(d,i){ html += _iplnBuildRow(d,i); });
+  document.getElementById('iplnBody').innerHTML = html;
+}
+
+function openImgPlanCfg(){
+  _iplnRender();
+  // 每次打开重置到自定义 Tab
+  iplnSwitchTab('custom');
+  // 重置 AI 面板状态
+  document.getElementById('iplnAiLoading').classList.remove('show');
+  document.getElementById('iplnAiResult').classList.remove('show');
+  document.getElementById('iplnAiFoot').style.display = 'none';
+  document.getElementById('imgPlanMask').classList.add('show');
+}
+function closeImgPlanCfg(e){
+  if(!e || e.target===document.getElementById('imgPlanMask')){
+    document.getElementById('imgPlanMask').classList.remove('show');
+  }
+}
+function iplnToggle(cb, idx){
+  _iplnData[idx].on = cb.checked;
+  var row = document.getElementById('iplnRow'+idx);
+  row.classList.toggle('off', !cb.checked);
+}
+function iplnStep(idx, delta){
+  var d = _iplnData[idx];
+  d.count = Math.max(1, d.count + delta);
+  var el = document.getElementById('iplnN'+idx);
+  if(el) el.textContent = d.count;
+}
+function iplnSetRatio(idx, r){
+  _iplnData[idx].ratio = r;
+}
+function iplnToggleReq(idx){
+  var zone = document.getElementById('iplnReq'+idx);
+  var btn  = document.getElementById('iplnExp'+idx);
+  var isOpen = zone.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+  if(isOpen) setTimeout(function(){ zone.querySelector('textarea').focus(); }, 220);
+}
+function iplnSetReq(idx, v){ _iplnData[idx].req = v; }
+function iplnRemove(idx){
+  _iplnData.splice(idx, 1);
+  _iplnRender();
+}
+function addIplnRow(){
+  var inp = document.getElementById('iplnNewName');
+  var name = inp.value.trim();
+  if(!name) return;
+  _iplnData.push({key:name, on:true, count:1, ratio:'1:1', req:'', custom:true});
+  _iplnRender();
+  inp.value = '';
+  // 滚到底
+  var body = document.getElementById('iplnBody');
+  body.scrollTop = body.scrollHeight;
+}
+function saveImgPlanCfg(){
+  var active = [];
+  _iplnData.forEach(function(d){
+    if(d.on) active.push(d.key+'×'+d.count+'('+d.ratio+')');
+  });
+  var summary = active.length ? active.join(' · ') : '暂无配置';
+  document.getElementById('imgPlanSummary').textContent = summary;
+  closeImgPlanCfg();
+}
+
+/* ── 板块设置 Tab 切换 ── */
+var _iplnCurrentTab = 'custom';
+function iplnSwitchTab(mode){
+  _iplnCurrentTab = mode;
+  var isCustom = mode === 'custom';
+  document.getElementById('iplnTabCustom').classList.toggle('active', isCustom);
+  document.getElementById('iplnTabAi').classList.toggle('active', !isCustom);
+  document.getElementById('iplnPanelCustom').style.display = isCustom ? 'flex' : 'none';
+  document.getElementById('iplnPanelAi').style.display = isCustom ? 'none' : 'flex';
+}
+
+/* ── AI 智能生成 ── */
+var _iplnAiDraft = null; // 暂存 AI 方案
+
+// AI 预设方案库（模拟）
+var _iplnAiPresets = [
+  [{key:'主图',on:true,count:3,ratio:'1:1',req:''},{key:'详情图',on:true,count:5,ratio:'9:16',req:''},{key:'白底图',on:true,count:2,ratio:'1:1',req:''}],
+  [{key:'主图',on:true,count:4,ratio:'1:1',req:''},{key:'场景图',on:true,count:3,ratio:'4:3',req:''},{key:'推广图',on:true,count:2,ratio:'16:9',req:''}],
+  [{key:'主图',on:true,count:3,ratio:'1:1',req:''},{key:'详情图',on:true,count:6,ratio:'9:16',req:''},{key:'活动图',on:true,count:1,ratio:'16:9',req:''}],
+  [{key:'主图',on:true,count:2,ratio:'1:1',req:''},{key:'白底图',on:true,count:3,ratio:'1:1',req:''},{key:'详情图',on:true,count:4,ratio:'9:16',req:''},{key:'推广图',on:true,count:2,ratio:'16:9',req:''}],
+];
+
+function iplnAiGenerate(){
+  var prompt = document.getElementById('iplnAiPrompt').value.trim();
+  // 隐藏旧结果
+  var result = document.getElementById('iplnAiResult');
+  var loading = document.getElementById('iplnAiLoading');
+  var foot = document.getElementById('iplnAiFoot');
+  result.classList.remove('show');
+  foot.style.display = 'none';
+  loading.classList.add('show');
+
+  // 模拟延迟
+  setTimeout(function(){
+    loading.classList.remove('show');
+    // 根据 prompt 字数简单选一套预设
+    var idx = Math.floor((prompt.length % _iplnAiPresets.length));
+    _iplnAiDraft = JSON.parse(JSON.stringify(_iplnAiPresets[idx]));
+
+    // 渲染预览
+    var html = '';
+    _iplnAiDraft.forEach(function(d){
+      html += '<div class="ipln-row" style="pointer-events:none;">'
+        +'<span class="ipln-rname" style="flex:1;font-weight:600;">'+d.key+'</span>'
+        +'<div class="ipln-rctrl" style="gap:6px;">'
+        +'<span style="background:#f0eeff;color:#6366f1;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:700;">×'+d.count+'</span>'
+        +'<span style="background:#f5f5f5;color:#666;border-radius:5px;padding:2px 8px;font-size:11px;">'+d.ratio+'</span>'
+        +'</div>'
+        +'</div>';
+    });
+    document.getElementById('iplnAiBody').innerHTML = html;
+    result.classList.add('show');
+    foot.style.display = '';
+  }, 1350);
+}
+
+function iplnAiConfirm(){
+  if(!_iplnAiDraft) return;
+  _iplnAiDraft.forEach(function(d){
+    var existing = _iplnData.find(function(x){ return x.key === d.key; });
+    if(existing){
+      existing.on = true;
+      existing.count = d.count;
+      existing.ratio = d.ratio;
+    } else {
+      _iplnData.push({key:d.key, on:true, count:d.count, ratio:d.ratio, req:'', custom:true});
+    }
+  });
+  _iplnData.forEach(function(x){
+    var inDraft = _iplnAiDraft.find(function(d){ return d.key === x.key; });
+    if(!inDraft) x.on = false;
+  });
+  _iplnAiDraft = null;
+  iplnSwitchTab('custom');
+  _iplnRender();
+}
+
+/* ════════════════════════════════════════
+   生成模式切换（自定义 / AI 智能）
+════════════════════════════════════════ */
+var _genMode = 'custom';
+
+function switchGenMode(mode){
+  _genMode = mode;
+  var isAi = mode === 'ai';
+
+  // 按钮激活态
+  document.getElementById('genModeCustomBtn').classList.toggle('active', !isAi);
+  document.getElementById('genModeAiBtn').classList.toggle('active', isAi);
+
+  if(isAi){
+    // AI 智能模式：弹出 AI 板块设置弹窗
+    openAiModeMask();
+  } else {
+    // 自定义模式：只切换样式
+    var txtAdv = document.getElementById('genBtnTxtAdv');
+    var btnAdv = document.getElementById('genBtnAdv');
+    if(txtAdv && btnAdv && !btnAdv.classList.contains('disabled')){
+      txtAdv.textContent = '✨ 立即生成套图';
+    }
+  }
+}
+
+/* ── AI 智能模式弹窗 ── */
+function openAiModeMask(){
+  _aiModeRender();
+  document.getElementById('aiModeMask').classList.add('show');
+  document.getElementById('aiModeAnalyzing').style.display = 'none';
+  document.getElementById('aiModeStartBtn').style.display = '';
+}
+
+function closeAiModeMask(e){
+  if(!e || e.target === document.getElementById('aiModeMask')){
+    document.getElementById('aiModeMask').classList.remove('show');
+    // 若用户关掉而未分析，把模式切回自定义
+    _genMode = 'custom';
+    document.getElementById('genModeCustomBtn').classList.add('active');
+    document.getElementById('genModeAiBtn').classList.remove('active');
+  }
+}
+
+function _aiModeRender(){
+  var list = document.getElementById('aiModeIplnList');
+  if(!list) return;
+  var ratios = ['1:1','3:4','9:16','16:9','4:3'];
+  var html = '';
+  _iplnData.forEach(function(d, i){
+    var opts = ratios.map(function(r){
+      return '<option value="'+r+'"'+(d.ratio===r?' selected':'')+'>'+r+'</option>';
+    }).join('');
+    html += '<div class="ai-ipln-row'+(d.on?'':' off')+'" id="aiModeRow'+i+'">'
+      +'<label class="ai-tog">'
+        +'<input type="checkbox"'+(d.on?' checked':'')
+          +' onchange="aiModeToggle(this,'+i+')">'
+        +'<span class="ai-tog-track"></span>'
+        +'<span class="ai-tog-thumb"></span>'
+      +'</label>'
+      +'<span class="ai-ipln-name">'+d.key+'</span>'
+      +'<div class="ai-st">'
+        +'<button class="ai-st-btn" onclick="aiModeStep('+i+',-1)">−</button>'
+        +'<span class="ai-st-n" id="aiModeN'+i+'">'+d.count+'</span>'
+        +'<button class="ai-st-btn" onclick="aiModeStep('+i+',1)">+</button>'
+      +'</div>'
+      +'<div class="ai-sz">'
+        +'<select class="ai-sz-sel" onchange="aiModeRatio('+i+',this.value)">'+opts+'</select>'
+        +'<svg class="ai-sz-arr" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
+      +'</div>'
+    +'</div>';
+  });
+  list.innerHTML = html;
+}
+
+function aiModeToggle(cb, idx){
+  _iplnData[idx].on = cb.checked;
+  var row = document.getElementById('aiModeRow'+idx);
+  if(row) row.classList.toggle('off', !cb.checked);
+}
+
+function aiModeStep(idx, delta){
+  _iplnData[idx].count = Math.max(1, _iplnData[idx].count + delta);
+  var el = document.getElementById('aiModeN'+idx);
+  if(el) el.textContent = _iplnData[idx].count;
+}
+
+function aiModeRatio(idx, r){ _iplnData[idx].ratio = r; }
+
+function aiModeAddRow(){
+  var inp = document.getElementById('aiModeNewName');
+  var name = inp.value.trim();
+  if(!name) return;
+  _iplnData.push({key:name, on:true, count:1, ratio:'1:1', req:'', custom:true});
+  inp.value = '';
+  _aiModeRender();
+}
+
+function aiModeStartAnalyze(){
+  var active = _iplnData.filter(function(d){ return d.on; });
+  if(!active.length){ alert('请至少开启一种图片类型'); return; }
+
+  // 显示分析中状态
+  document.getElementById('aiModeStartBtn').style.display = 'none';
+  document.getElementById('aiModeAnalyzing').style.display = 'flex';
+  document.getElementById('aiModeIplnList').style.opacity = '0.4';
+
+  setTimeout(function(){
+    document.getElementById('aiModeMask').classList.remove('show');
+    document.getElementById('aiModeIplnList').style.opacity = '';
+
+    // 更新生成按钮
+    var txtAdv = document.getElementById('genBtnTxtAdv');
+    var btnAdv = document.getElementById('genBtnAdv');
+    if(txtAdv){ txtAdv.textContent = '✦ AI 智能生成'; }
+    if(btnAdv){ btnAdv.classList.remove('disabled'); }
+
+    // 同步 summary
+    saveImgPlanCfg();
+  }, 2000);
+}
+
+function toggleIplnCheck(ckBtn){
+  var item = ckBtn.closest('.ipln-item');
+  var wasChecked = item.classList.toggle('checked');
+  // 取消勾选时收起展开区
+  if(!wasChecked){
+    var wrap = item.querySelector('.ipln-req-wrap');
+    var expBtn = item.querySelector('.ipln-expand-btn');
+    wrap && wrap.classList.remove('open');
+    expBtn && expBtn.classList.remove('open');
+  }
+}
+function toggleIplnReq(btn){
+  var wrap = btn.closest('.ipln-item').querySelector('.ipln-req-wrap');
+  var isOpen = wrap.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+  if(isOpen) setTimeout(function(){ wrap.querySelector('textarea').focus(); }, 260);
+}
+function pickIplnRatio(chip, ratio){
+  var item = chip.closest('.ipln-item');
+  // 切换 chip active
+  item.querySelectorAll('.ipln-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  // 更新顶部 badge 文字和 data-ratio
+  var badge = item.querySelector('.ipln-badge');
+  badge.textContent = ratio;
+  badge.dataset.ratio = ratio;
+  item.dataset.ratio = ratio;
+}
+// 监听要求 textarea 内容变化，有内容时给展开按钮加标记
+document.addEventListener('input', function(e){
+  if(e.target && e.target.classList.contains('ipln-req-ta')){
+    var btn = e.target.closest('.ipln-item').querySelector('.ipln-expand-btn');
+    btn.classList.toggle('has-req', e.target.value.trim().length > 0);
+  }
+});
+function addIplnItem(){
+  var inp = document.getElementById('ipln-new-name');
+  var ratio = document.getElementById('ipln-new-ratio').value;
+  var name = inp.value.trim();
+  if(!name) return;
+  var colors = ['#6366f1','#8b5cf6','#ec4899','#f97316','#0ea5e9','#14b8a6','#84cc16'];
+  var dot = colors[Math.floor(Math.random()*colors.length)];
+  var container = document.getElementById('ipln-rows');
+  var item = document.createElement('div');
+  item.className = 'ipln-item is-zero';
+  item.dataset.key = name;
+  item.dataset.ratio = ratio;
+  item.dataset.dot = dot;
+  item.dataset.custom = '1';
+  var allRatios = ['1:1','3:4','9:16','16:9','4:3'];
+  var chipsHtml = allRatios.map(function(r){
+    return '<button class="ipln-chip'+(r===ratio?' active':'')+'" onclick="pickIplnRatio(this,\''+r+'\')">'+r+'</button>';
+  }).join('');
+  item.classList.add('checked');
+  item.innerHTML =
+    '<div class="ipln-item-top">'
+    +'<button class="ipln-ck" onclick="toggleIplnCheck(this)">'
+    +'<svg class="ipln-ck-icon" width="11" height="11" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    +'</button>'
+    +'<span class="ipln-dot" style="background:'+dot+'"></span>'
+    +'<span class="ipln-name">'+name+'</span>'
+    +'<div class="ipln-chips ipln-chips-inline">'+chipsHtml+'</div>'
+    +'<button class="ipln-expand-btn" onclick="toggleIplnReq(this)" title="展开要求">'
+    +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
+    +'</button>'
+    +'<button class="ipln-step-btn" onclick="this.closest(\'.ipln-item\').remove()" style="color:#f87171;font-size:15px;flex-shrink:0;" title="删除">×</button>'
+    +'</div>'
+    +'<div class="ipln-req-wrap">'
+    +'<textarea class="ipln-req-ta" placeholder="'+name+'生成要求..."></textarea>'
+    +'</div>';
+  container.appendChild(item);
+  updateIplnZero(item);
+  inp.value = '';
+  inp.focus();
+}
+function saveImgPlanCfg(){
+  var items = document.querySelectorAll('#ipln-rows .ipln-item');
+  var active = [];
+  items.forEach(function(item){
+    if(!item.classList.contains('checked')) return;
+    var key = item.dataset.key;
+    var ratio = item.dataset.ratio || '1:1';
+    active.push(key+'('+ratio+')');
+  });
+  var summary = active.length ? active.join(' · ') : '暂无配置';
+  document.getElementById('imgPlanSummary').textContent = summary;
+  closeImgPlanCfg();
+}
+
 function openGenCfg(){
   document.getElementById('genCfgMask').classList.add('show');
 }
@@ -3122,6 +4458,21 @@ function updateBtn(){
     cost.textContent=(selMods*_cnt*22)+'灵石';
     btn.classList.remove('disabled');
   }
+  // 同步电商套图按钮
+  const btnAdv=document.getElementById('genBtnAdv');
+  const txtAdv=document.getElementById('genBtnTxtAdv');
+  const costAdv=document.getElementById('genCostAdv');
+  if(btnAdv){
+    if(!hasPic){
+      txtAdv.textContent='请上传产品图';
+      btnAdv.classList.add('disabled');
+      if(costAdv) costAdv.style.display='none';
+    } else {
+      txtAdv.textContent = _genMode==='ai' ? '✦ AI 智能生成' : '✨ 立即生成套图';
+      btnAdv.classList.remove('disabled');
+      if(costAdv){ costAdv.style.display='inline-block'; costAdv.textContent='128 灵石'; }
+    }
+  }
 }
 
 /* ── 生成流程 ── */
@@ -3148,6 +4499,64 @@ function startGen(){
     buildResult(mods);
     document.getElementById('resultArea').style.display='block';
   },2800);
+}
+
+/* ── 电商套图面板生成 ── */
+function startGenAdv(){
+  var btn = document.getElementById('genBtnAdv');
+  if(btn.classList.contains('disabled')) return;
+
+  if(_genMode === 'ai'){
+    // AI 智能模式：读取内嵌面板配置，展示分析动画
+    var activePlans = _iplnData.filter(function(d){ return d.on; });
+    if(!activePlans.length){
+      alert('请至少开启一种图片类型');
+      return;
+    }
+    // 更新按钮文案为生成中
+    var txt = document.getElementById('genBtnTxtAdv');
+    btn.classList.add('disabled');
+    txt.textContent = '✦ AI 分析中...';
+    // 模拟生成进度
+    var prog = document.getElementById('progCard');
+    var empty = document.getElementById('emptyState');
+    var result = document.getElementById('resultArea');
+    var task = document.getElementById('taskCard');
+    if(empty) empty.style.display = 'none';
+    if(result) result.style.display = 'none';
+    if(task) task.style.display = 'none';
+    if(prog) prog.style.display = 'block';
+    setTimeout(function(){
+      if(prog) prog.style.display = 'none';
+      if(task) task.style.display = 'flex';
+      // 用板块配置构造模块名列表
+      var mods = activePlans.map(function(d){ return d.key; });
+      buildResult(mods);
+      if(result) result.style.display = 'block';
+      btn.classList.remove('disabled');
+      txt.textContent = '✨ 重新生成';
+    }, 2400);
+  } else {
+    // 自定义模式：同主面板 startGen 逻辑
+    var mods = Array.from(document.querySelectorAll('#modGridAdv .mod-card.sel')).map(function(m){
+      return m.querySelector('.mod-name').textContent;
+    });
+    var empty = document.getElementById('emptyState');
+    var result = document.getElementById('resultArea');
+    var task = document.getElementById('taskCard');
+    var prog = document.getElementById('progCard');
+    if(empty) empty.style.display = 'none';
+    if(result) result.style.display = 'none';
+    if(task) task.style.display = 'none';
+    if(prog) prog.style.display = 'block';
+    clearTimeout(_t1); clearTimeout(_t2);
+    _t1 = setTimeout(function(){
+      if(prog) prog.style.display = 'none';
+      if(task) task.style.display = 'flex';
+      buildResult(mods);
+      if(result) result.style.display = 'block';
+    }, 2800);
+  }
 }
 
 /* ── 构建结果 ── */
@@ -3343,6 +4752,234 @@ function useAiResult(){
   document.getElementById('aiwMask').classList.remove('show');
 }
 
+/* ════════════════════════════════
+   板块配置弹窗
+════════════════════════════════ */
+var _scfgCard = null;
+var _ratioDefaultMap = {主图:'1:1', 详情:'9:16', SKU:'1:1', 车图:'1:1'};
+
+function openSuiteCfg(e, card){
+  e.stopPropagation();
+  if(!card.closest('#leftAplusAdv')) return;
+  _scfgCard = card;
+
+  var stype  = card.dataset.stype || '主图';
+  var name   = (card.querySelector('.mod-name')||{}).textContent || '';
+  var desc   = card.dataset.scfgDesc  || '';
+  var ratio  = card.dataset.scfgRatio || _ratioDefaultMap[stype] || '1:1';
+  var refSrc = card.dataset.scfgRef   || '';
+
+  // 类型 combobox
+  document.querySelectorAll('.scfg-combo-opt').forEach(o=>o.classList.remove('on'));
+  var matched = document.querySelector('.scfg-combo-opt[data-v="'+stype+'"]');
+  if(matched) matched.classList.add('on');
+  document.getElementById('scfgTypeInput').value = stype;
+  closeScfgTypeDrop();
+
+  // 尺寸
+  _setScfgRatio(ratio);
+
+  // 名称
+  document.getElementById('scfgName').value = name;
+
+  // 参考图
+  var img   = document.getElementById('scfgRefImg');
+  var ph    = document.getElementById('scfgRefPlaceholder');
+  var clr   = document.getElementById('scfgRefClear');
+  if(refSrc){
+    img.src = refSrc; img.style.display='block';
+    ph.style.display='none'; clr.style.display='block';
+  } else {
+    img.src=''; img.style.display='none';
+    ph.style.display=''; clr.style.display='none';
+  }
+
+  // 要求说明
+  document.getElementById('scfgDesc').value = desc;
+
+  document.getElementById('scfgMask').classList.add('show');
+}
+
+function closeScfg(e){
+  if(e && e.target !== document.getElementById('scfgMask')) return;
+  document.getElementById('scfgMask').classList.remove('show');
+  closeScfgTypeDrop();
+}
+
+function saveScfg(){
+  if(!_scfgCard) return;
+  var stype = document.getElementById('scfgTypeInput').value.trim() || '主图';
+  var name  = document.getElementById('scfgName').value.trim() || '未命名';
+  var desc  = document.getElementById('scfgDesc').value.trim();
+  var img   = document.getElementById('scfgRefImg');
+  var refSrc= (img.style.display!=='none' && img.src) ? img.src : '';
+  var ratioChip = document.querySelector('.scfg-ratio-chip.on');
+  var ratio = ratioChip ? ratioChip.dataset.r : '1:1';
+
+  _scfgCard.dataset.stype      = stype;
+  _scfgCard.dataset.scfgDesc   = desc;
+  _scfgCard.dataset.scfgRatio  = ratio;
+  _scfgCard.dataset.scfgRef    = refSrc;
+
+  // 更新名称
+  var nameEl = _scfgCard.querySelector('.mod-name');
+  if(nameEl) nameEl.textContent = name;
+  // 更新描述
+  var descEl = _scfgCard.querySelector('.mod-desc');
+  if(descEl) descEl.textContent = desc || '';
+  // 更新类型标签
+  var tag = _scfgCard.querySelector('.mod-stype-tag');
+  if(tag){
+    tag.textContent = stype;
+    tag.className = 'mod-stype-tag ' + _stypeClass(stype);
+  }
+  // 参考图角标
+  var dot = _scfgCard.querySelector('.mod-ref-dot');
+  if(dot) dot.classList.toggle('on', !!refSrc);
+
+  document.getElementById('scfgMask').classList.remove('show');
+  closeScfgTypeDrop();
+}
+
+function _stypeClass(stype){
+  if(stype==='详情') return 'stype-detail';
+  if(stype==='SKU')  return 'stype-sku';
+  if(stype==='车图') return 'stype-promo';
+  return '';
+}
+
+/* Combobox */
+function toggleScfgTypeDrop(e){
+  var drop  = document.getElementById('scfgTypeDrop');
+  var arrow = document.getElementById('scfgComboArrow');
+  var isOpen = drop.classList.contains('open');
+  if(isOpen){ drop.classList.remove('open'); arrow.classList.remove('open'); }
+  else {
+    document.querySelectorAll('.scfg-combo-opt').forEach(o=>o.classList.remove('hidden'));
+    drop.classList.add('open'); arrow.classList.add('open');
+    document.getElementById('scfgTypeInput').focus();
+  }
+}
+function filterScfgTypeOpts(val){
+  var drop  = document.getElementById('scfgTypeDrop');
+  var arrow = document.getElementById('scfgComboArrow');
+  if(!drop.classList.contains('open')){ drop.classList.add('open'); arrow.classList.add('open'); }
+  document.querySelectorAll('.scfg-combo-opt').forEach(function(o){
+    o.classList.toggle('hidden', !!(val && o.dataset.v.indexOf(val)===-1));
+    o.classList.remove('on');
+  });
+}
+function pickScfgTypeOpt(opt){
+  document.querySelectorAll('.scfg-combo-opt').forEach(o=>o.classList.remove('on'));
+  opt.classList.add('on');
+  document.getElementById('scfgTypeInput').value = opt.dataset.v;
+  closeScfgTypeDrop();
+  // 切换类型时联动尺寸默认值
+  var def = _ratioDefaultMap[opt.dataset.v] || '1:1';
+  _setScfgRatio(def);
+}
+function closeScfgTypeDrop(){
+  var drop  = document.getElementById('scfgTypeDrop');
+  var arrow = document.getElementById('scfgComboArrow');
+  if(drop)  drop.classList.remove('open');
+  if(arrow) arrow.classList.remove('open');
+}
+
+/* 尺寸 */
+function _setScfgRatio(r){
+  document.querySelectorAll('.scfg-ratio-chip').forEach(function(c){
+    c.classList.toggle('on', c.dataset.r===r);
+  });
+  if(!document.querySelector('.scfg-ratio-chip.on')){
+    var first=document.querySelector('.scfg-ratio-chip');
+    if(first) first.classList.add('on');
+  }
+}
+function pickScfgRatio(chip){
+  document.querySelectorAll('.scfg-ratio-chip').forEach(c=>c.classList.remove('on'));
+  chip.classList.add('on');
+}
+
+/* 参考图 */
+function triggerScfgRef(){ document.getElementById('scfgRefFile').click(); }
+function loadScfgRef(input){
+  if(!input.files||!input.files[0]) return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var img=document.getElementById('scfgRefImg');
+    var ph =document.getElementById('scfgRefPlaceholder');
+    var clr=document.getElementById('scfgRefClear');
+    img.src=ev.target.result; img.style.display='block';
+    ph.style.display='none'; clr.style.display='block';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+function clearScfgRef(e){
+  e.stopPropagation();
+  document.getElementById('scfgRefImg').src='';
+  document.getElementById('scfgRefImg').style.display='none';
+  document.getElementById('scfgRefPlaceholder').style.display='';
+  document.getElementById('scfgRefClear').style.display='none';
+  document.getElementById('scfgRefFile').value='';
+}
+
+/* 点外关闭 combobox */
+document.addEventListener('click',function(e){
+  var combo=document.getElementById('scfgTypeCombo');
+  if(combo&&!combo.contains(e.target)) closeScfgTypeDrop();
+});
+
+/* ════════════════════════════════
+   添加套图弹窗
+════════════════════════════════ */
+function addNewSuiteCard(){
+  document.querySelectorAll('.sa-type-btn').forEach(b=>b.classList.remove('on'));
+  var first=document.querySelector('.sa-type-btn');
+  if(first) first.classList.add('on');
+  document.getElementById('suiteAddName').value='';
+  document.getElementById('suiteAddNote').value='';
+  document.getElementById('suiteAddMask').classList.add('show');
+}
+function closeSuiteAdd(e){
+  if(e && e.target!==document.getElementById('suiteAddMask')) return;
+  document.getElementById('suiteAddMask').classList.remove('show');
+}
+function pickSaType(btn){
+  document.querySelectorAll('.sa-type-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function confirmSuiteAdd(){
+  var typeBtn = document.querySelector('.sa-type-btn.on');
+  var stype   = typeBtn ? typeBtn.dataset.v : '主图';
+  var name    = document.getElementById('suiteAddName').value.trim() || stype+'图';
+  var note    = document.getElementById('suiteAddNote').value.trim();
+  var grid    = document.getElementById('modGridAdv');
+  var moreCard= document.getElementById('modMoreCardAdv');
+
+  var tagClass = '';
+  if(stype==='详情') tagClass='stype-detail';
+  else if(stype==='SKU') tagClass='stype-sku';
+  else if(stype==='推广'||stype==='场景'||stype==='对比') tagClass='stype-promo';
+
+  var card = document.createElement('div');
+  card.className='mod-card mod-new';
+  card.draggable=true;
+  card.dataset.stype=stype;
+  card.innerHTML=
+    '<button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块">'+
+    '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'+
+    '<div class="mod-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>'+
+    '<span class="mod-stype-tag '+tagClass+'">'+stype+'</span>'+
+    '<span class="mod-name">'+name+'</span>'+
+    '<span class="mod-desc">'+note+'</span>'+
+    '<div class="mod-ref-dot"></div>';
+  card.onclick=function(){ toggleMod(card); };
+  card.ondblclick=function(ev){ openSuiteCfg(ev,card); };
+  grid.insertBefore(card, moreCard);
+
+  document.getElementById('suiteAddMask').classList.remove('show');
+}
+
 /* ── 侧边栏场景切换 ── */
 function switchScene(scene, el){
   document.querySelectorAll('.sidebar .si').forEach(s=>s.classList.remove('active'));
@@ -3358,7 +4995,21 @@ function switchScene(scene, el){
   }
 }
 
-/* ── A+高级生图面板：全选切换 ── */
+/* ════════════════════════════════
+   图片类型规划板块
+════════════════════════════════ */
+function toggleImgPlan(id){
+  document.getElementById(id).classList.toggle('sel');
+}
+
+function changeCount(id, delta){
+  var el = document.getElementById('cnt-' + id);
+  var cur = parseInt(el.textContent) || 1;
+  var next = Math.max(1, Math.min(20, cur + delta));
+  el.textContent = next;
+}
+
+/* ── 电商套图面板：全选切换 ── */
 function toggleSelAllAdv(){
   var cards=document.querySelectorAll('#modGridAdv .mod-card:not(.mod-more-card)');
   var allSel=[...cards].every(c=>c.classList.contains('sel'));
