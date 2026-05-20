@@ -1173,6 +1173,39 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 /* ══ 电商套图：两个设置按钮垂直堆叠 ══ */
 .suite-cfg-btns{display:flex;flex-direction:column;gap:7px;}
 
+/* ══ 内联生成设置 ══ */
+.gset-inline{
+  margin-top:10px;border:1.5px solid #eee;border-radius:10px;
+  overflow:hidden;background:#fafafa;
+}
+.gset-inline-hd{
+  padding:8px 12px 6px;border-bottom:1px solid #f0f0f0;
+  display:flex;align-items:center;
+}
+.gset-inline-title{
+  font-size:11px;font-weight:700;color:#aaa;letter-spacing:.04em;text-transform:uppercase;
+}
+.gset-row{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 12px;border-bottom:1px solid #f0f0f0;
+}
+.gset-label{
+  font-size:11px;font-weight:600;color:#999;white-space:nowrap;min-width:40px;
+}
+.gset-pills{
+  display:flex;flex-wrap:wrap;gap:4px;flex:1;
+}
+.gset-pill{
+  padding:3px 9px;border:1.5px solid #e8e8e8;border-radius:20px;
+  background:#fff;font-size:11px;font-weight:600;color:#888;
+  cursor:pointer;font-family:inherit;white-space:nowrap;
+  transition:all .13s;
+}
+.gset-pill.active{
+  border-color:#6366f1;background:#f0eeff;color:#6366f1;
+}
+.gset-pill:hover:not(.active){border-color:#bbb;color:#555;}
+
 /* ══ 生成模式 ══ */
 .gen-mode-row{
   display:flex;align-items:center;justify-content:space-between;
@@ -2452,8 +2485,10 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
           </div>
         </div>
 
-        <!-- 生成设置 + 板块设置 + 生成模式 -->
+        <!-- 基础配置 + 生成设置内联 + 生成模式 -->
         <div class="sec-block" style="margin-bottom:14px;">
+
+          <!-- 基础配置入口 -->
           <div class="suite-cfg-btns">
             <button class="gen-cfg-btn" onclick="openGenCfg()">
               <div class="gen-cfg-btn-l">
@@ -2461,7 +2496,7 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
                 </div>
                 <div>
-                  <div class="gen-cfg-btn-title">生成设置</div>
+                  <div class="gen-cfg-btn-title">基础配置</div>
                   <div class="gen-cfg-btn-sub" id="cfgSummaryAdv">亚马逊 · 英文 · GPT-Image 2 · 标准1K</div>
                 </div>
               </div>
@@ -2469,8 +2504,57 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
             </button>
           </div>
 
+          <!-- 生成设置（内联） -->
+          <div class="gset-inline">
+            <div class="gset-inline-hd">
+              <span class="gset-inline-title">生成设置</span>
+            </div>
+
+            <!-- 目标平台 -->
+            <div class="gset-row">
+              <span class="gset-label">目标平台</span>
+              <div class="gset-pills" id="gsetPlatRow">
+                <button class="gset-pill active" onclick="gsetPickPlat(this,'亚马逊')">亚马逊</button>
+                <button class="gset-pill" onclick="gsetPickPlat(this,'淘宝/天猫')">淘宝/天猫</button>
+                <button class="gset-pill" onclick="gsetPickPlat(this,'TikTok')">TikTok</button>
+                <button class="gset-pill" onclick="gsetPickPlat(this,'独立站')">独立站</button>
+              </div>
+            </div>
+
+            <!-- 输出语言 -->
+            <div class="gset-row">
+              <span class="gset-label">语言</span>
+              <div class="gset-pills" id="gsetLangRow">
+                <button class="gset-pill active" onclick="gsetPickLang(this,'英文')">英文</button>
+                <button class="gset-pill" onclick="gsetPickLang(this,'中文')">中文</button>
+                <button class="gset-pill" onclick="gsetPickLang(this,'日文')">日文</button>
+                <button class="gset-pill" onclick="gsetPickLang(this,'德文')">德文</button>
+              </div>
+            </div>
+
+            <!-- AI 模型 -->
+            <div class="gset-row">
+              <span class="gset-label">AI 模型</span>
+              <div class="gset-pills" id="gsetModelRow">
+                <button class="gset-pill active" onclick="gsetPickModel(this,'GPT-Image 2')">GPT-Image 2</button>
+                <button class="gset-pill" onclick="gsetPickModel(this,'Gemini')">Gemini</button>
+                <button class="gset-pill" onclick="gsetPickModel(this,'通义万象')">通义万象</button>
+              </div>
+            </div>
+
+            <!-- 图片画质 -->
+            <div class="gset-row" style="border-bottom:none;">
+              <span class="gset-label">画质</span>
+              <div class="gset-pills" id="gsetResRow">
+                <button class="gset-pill active" onclick="gsetPickRes(this,'标准1K')">标准 1K</button>
+                <button class="gset-pill" onclick="gsetPickRes(this,'高清2K')">高清 2K</button>
+                <button class="gset-pill" onclick="gsetPickRes(this,'超清4K')">超清 4K</button>
+              </div>
+            </div>
+          </div>
+
           <!-- 生成模式切换 -->
-          <div class="gen-mode-row">
+          <div class="gen-mode-row" style="margin-top:12px;">
             <span class="gen-mode-label">生成模式</span>
             <div class="gen-mode-seg">
               <button class="gen-mode-btn active" id="genModeCustomBtn" onclick="switchGenMode('custom')">自定义</button>
@@ -2845,6 +2929,16 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
       <button class="ipln-close" onclick="closeAiModeMask()" style="margin-top:2px;">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
+    </div>
+
+    <!-- 当前生成设置摘要条 -->
+    <div id="aiModeGsetBar" style="
+      display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+      padding:8px 20px;background:#f8f7ff;border-bottom:1px solid #ede9ff;
+      flex-shrink:0;
+    ">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2" style="flex-shrink:0"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      <span id="aiModeGsetText" style="font-size:11px;color:#6366f1;font-weight:600;">亚马逊 · 英文 · GPT-Image 2 · 标准1K</span>
     </div>
 
     <!-- 板块列表（可滚动） -->
@@ -3447,19 +3541,35 @@ function iplnAiConfirm(){
 ════════════════════════════════════════ */
 var _genMode = 'custom';
 
+/* ── 内联生成设置：选值函数 ── */
+var _gset = { plat:'亚马逊', lang:'英文', model:'GPT-Image 2', res:'标准1K' };
+
+function _gsetPickOne(rowId, btn, val, key){
+  document.querySelectorAll('#'+rowId+' .gset-pill').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  _gset[key] = val;
+  _syncGcfgFromGset(); // 同步到 genCfgMask 弹窗的摘要
+}
+function gsetPickPlat(btn, val){ _gsetPickOne('gsetPlatRow', btn, val, 'plat'); }
+function gsetPickLang(btn, val){ _gsetPickOne('gsetLangRow', btn, val, 'lang'); }
+function gsetPickModel(btn, val){ _gsetPickOne('gsetModelRow', btn, val, 'model'); }
+function gsetPickRes(btn, val){ _gsetPickOne('gsetResRow', btn, val, 'res'); }
+
+function _syncGcfgFromGset(){
+  var s = document.getElementById('cfgSummaryAdv');
+  if(s) s.textContent = _gset.plat+' · '+_gset.lang+' · '+_gset.model+' · '+_gset.res;
+}
+
 function switchGenMode(mode){
   _genMode = mode;
   var isAi = mode === 'ai';
 
-  // 按钮激活态
   document.getElementById('genModeCustomBtn').classList.toggle('active', !isAi);
   document.getElementById('genModeAiBtn').classList.toggle('active', isAi);
 
   if(isAi){
-    // AI 智能模式：弹出 AI 板块设置弹窗
     openAiModeMask();
   } else {
-    // 自定义模式：只切换样式
     var txtAdv = document.getElementById('genBtnTxtAdv');
     var btnAdv = document.getElementById('genBtnAdv');
     if(txtAdv && btnAdv && !btnAdv.classList.contains('disabled')){
@@ -3471,6 +3581,9 @@ function switchGenMode(mode){
 /* ── AI 智能模式弹窗 ── */
 function openAiModeMask(){
   _aiModeRender();
+  // 同步摘要条
+  var bar = document.getElementById('aiModeGsetText');
+  if(bar) bar.textContent = _gset.plat+' · '+_gset.lang+' · '+_gset.model+' · '+_gset.res;
   document.getElementById('aiModeMask').classList.add('show');
   document.getElementById('aiModeAnalyzing').style.display = 'none';
   document.getElementById('aiModeStartBtn').style.display = '';
