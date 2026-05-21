@@ -2433,11 +2433,64 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
 
 /* ══ 板块编辑弹窗 ══ */
 .card-edit-mask{
-  display:none;position:fixed;inset:0;z-index:900;
-  background:rgba(20,18,40,.45);backdrop-filter:blur(4px);
-  align-items:center;justify-content:center;
+  display:none; position:fixed; inset:0; z-index:800; background:rgba(0,0,0,0.5);
+  align-items:center; justify-content:center;
 }
 .card-edit-mask.show{display:flex;}
+
+/* 高级设置弹窗 */
+.adv-mask {
+  display:none; position:fixed; inset:0; z-index:900; background:rgba(0,0,0,0.5);
+  align-items:center; justify-content:center;
+}
+.adv-mask.show { display:flex; }
+.adv-panel {
+  width:920px; height:640px; background:#fff; border-radius:18px;
+  display:flex; flex-direction:column; overflow:hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: aiSheetIn 0.3s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+}
+.adv-hd {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 24px; border-bottom:1px solid #f3f3f5; flex-shrink:0;
+}
+.adv-body { display:flex; flex:1; overflow:hidden; }
+.adv-sidebar {
+  width:240px; border-right:1px solid #f3f3f5; overflow-y:auto;
+  background:#f9f9fb; padding:12px; display:flex; flex-direction:column; gap:4px;
+}
+.adv-item {
+  display:flex; align-items:center; gap:10px; padding:10px 12px;
+  border-radius:10px; cursor:pointer; transition:all 0.2s;
+  border: 1.5px solid transparent;
+}
+.adv-item:hover { background:#eeefff; }
+.adv-item.active {
+  background:#fff; border-color:#6366f1; box-shadow: 0 4px 12px rgba(99,102,241,0.1);
+}
+.adv-item-check {
+  width:16px; height:16px; border:1.5px solid #d1d5db; border-radius:4px;
+  display:flex; align-items:center; justify-content:center; transition:all 0.2s;
+  background:#fff; flex-shrink:0;
+}
+.adv-item.sel .adv-item-check { background:#6366f1; border-color:#6366f1; }
+.adv-item-check svg { display:none; }
+.adv-item.sel .adv-item-check svg { display:block; }
+.adv-item-name { font-size:13px; font-weight:600; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.adv-content { flex:1; display:flex; flex-direction:column; padding:24px 32px; overflow-y:auto; }
+.adv-form-row { margin-bottom:20px; }
+.adv-label { font-size:12px; font-weight:600; color:#666; display:block; margin-bottom:8px; }
+.adv-input {
+  width:100%; padding:10px 14px; border:1.5px solid #e8e8f0; border-radius:10px;
+  font-size:13px; outline:none; transition:border-color 0.2s; font-family:inherit;
+}
+.adv-input:focus { border-color:#a5b4fc; }
+.adv-ta { height:120px; resize:none; line-height:1.6; }
+.adv-foot {
+  display:flex; align-items:center; justify-content:flex-end; gap:12px;
+  padding:16px 24px; border-top:1px solid #f3f3f5; background:#fff;
+}
+
 .card-edit-sheet{
   width:360px;max-width:94vw;border-radius:18px;
   background:#fff;box-shadow:0 20px 60px rgba(99,102,241,.18);
@@ -2845,6 +2898,9 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 添加
               </button>
+              <button class="mod-sel-all" onclick="openAdvSettings()" title="高级设置" style="padding: 0 4px; min-width: 28px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="margin:0"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              </button>
             </div>
           </div>
 
@@ -3216,10 +3272,53 @@ body{font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
         <button class="btn-gen disabled" id="genBtnCopy" onclick="startGenCopy()">
           <span id="genBtnCopyTxt">请上传参考图</span>
         </button>
+    </div>
+  </div>
+
+  <!-- 高级设置弹窗 -->
+  <div class="adv-mask" id="advSettingsMask" onclick="closeAdvSettings(event)">
+    <div class="adv-panel" onclick="event.stopPropagation()">
+      <div class="adv-hd">
+        <div>
+          <h3 style="margin:0; font-size:16px;">板块高级设置</h3>
+          <span style="font-size:11px; color:#aaa;">支持批量编辑所有板块的内容与生成要求</span>
+        </div>
+        <button class="ipln-close" onclick="closeAdvSettings()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="adv-body">
+        <div class="adv-sidebar" id="advSidebar">
+          <!-- 动态渲染 -->
+        </div>
+        <div class="adv-content">
+          <div class="adv-form-row">
+            <label class="adv-label">板块名称</label>
+            <input type="text" class="adv-input" id="advInputName" placeholder="如：核心卖点图"/>
+          </div>
+          <div class="adv-form-row" id="advInputDescWrap">
+            <label class="adv-label">备注/描述</label>
+            <input type="text" class="adv-input" id="advInputDesc" placeholder="如：突出差异优势"/>
+          </div>
+          <div class="adv-form-row">
+            <label class="adv-label">生成要求</label>
+            <textarea class="adv-input adv-ta" id="advInputReq" placeholder="描述此图的风格、重点、特殊要求…"></textarea>
+          </div>
+          <div style="margin-top:auto; font-size:11px; color:#bbb; display:flex; align-items:center; gap:6px;">
+            <kbd style="padding:2px 4px; border:1px solid #ddd; border-radius:4px; background:#f5f5f5;">↑</kbd>
+            <kbd style="padding:2px 4px; border:1px solid #ddd; border-radius:4px; background:#f5f5f5;">↓</kbd>
+            <span>按上下键快速切换板块</span>
+          </div>
+        </div>
+      </div>
+      <div class="adv-foot">
+        <button class="btn-outline" style="padding:8px 20px;" onclick="closeAdvSettings()">取消</button>
+        <button class="ipln-save-btn" style="width:120px;" onclick="saveAdvSettings()">保存修改</button>
       </div>
     </div>
+  </div>
 
-    <!-- ═══ 参考图复刻要求编辑器（全屏弹窗） ═══ -->
+  <!-- ═══ 参考图复刻要求编辑器（全屏弹窗） ═══ -->
     <div class="copy-editor-mask" id="copyEditorMask">
       <div class="copy-editor-sheet">
         <div class="copy-editor-hd">
@@ -7643,21 +7742,148 @@ function startGenCopy(){
   });
 }
 
-/* ════════════════════════════════
-   图片类型规划板块
-════════════════════════════════ */
-function toggleImgPlan(id){
-  document.getElementById(id).classList.toggle('sel');
+// ── 高级设置 ──
+var _advItems = [];
+var _advActiveIdx = 0;
+
+function openAdvSettings() {
+  _advItems = [];
+  _advActiveIdx = 0;
+
+  // 1. 收集主图板块
+  document.querySelectorAll('#mainCfgBlock .img-cfg-row').forEach(function(el) {
+    var nameEl = el.querySelector('.img-cfg-name');
+    _advItems.push({
+      mode: 'main',
+      el: el,
+      name: nameEl ? nameEl.textContent.trim() : '',
+      desc: '', // 主图无备注
+      req: el._ceReq || '',
+      sel: el.classList.contains('sel')
+    });
+  });
+
+  // 2. 收集详情图板块
+  document.querySelectorAll('#detailCfgBlock .mod-card').forEach(function(el) {
+    var nameEl = el.querySelector('.mod-name');
+    var descEl = el.querySelector('.mod-desc');
+    _advItems.push({
+      mode: 'detail',
+      el: el,
+      name: nameEl ? nameEl.textContent.trim() : '',
+      desc: descEl ? descEl.textContent.trim() : '',
+      req: el._ceReq || '',
+      sel: el.classList.contains('sel')
+    });
+  });
+
+  if (_advItems.length === 0) return;
+
+  renderAdvSidebar();
+  selectAdvItem(0);
+  document.getElementById('advSettingsMask').classList.add('show');
+
+  // 绑定键盘事件
+  window.addEventListener('keydown', handleAdvKeyDown);
 }
 
-function changeCount(id, delta){
-  var el = document.getElementById('cnt-' + id);
-  var cur = parseInt(el.textContent) || 1;
-  var next = Math.max(1, Math.min(20, cur + delta));
-  el.textContent = next;
+function closeAdvSettings(e) {
+  if (e && e.target !== document.getElementById('advSettingsMask')) return;
+  document.getElementById('advSettingsMask').classList.remove('show');
+  window.removeEventListener('keydown', handleAdvKeyDown);
 }
 
+function renderAdvSidebar() {
+  var bar = document.getElementById('advSidebar');
+  bar.innerHTML = '';
+  _advItems.forEach(function(item, idx) {
+    var div = document.createElement('div');
+    div.className = 'adv-item' + (item.sel ? ' sel' : '') + (idx === _advActiveIdx ? ' active' : '');
+    div.onclick = function() { selectAdvItem(idx); };
+    div.innerHTML = 
+      '<div class="adv-item-check" onclick="toggleAdvItem(event, ' + idx + ')">' +
+        '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg>' +
+      '</div>' +
+      '<span class="adv-item-name">' + (item.name || '未命名') + '</span>';
+    bar.appendChild(div);
+  });
+}
 
+function toggleAdvItem(e, idx) {
+  e.stopPropagation();
+  _advItems[idx].sel = !_advItems[idx].sel;
+  renderAdvSidebar();
+}
+
+function selectAdvItem(idx) {
+  // 保存当前编辑的内容
+  if (_advItems[_advActiveIdx]) {
+    _advItems[_advActiveIdx].name = document.getElementById('advInputName').value;
+    _advItems[_advActiveIdx].desc = document.getElementById('advInputDesc').value;
+    _advItems[_advActiveIdx].req = document.getElementById('advInputReq').value;
+  }
+
+  _advActiveIdx = idx;
+  var item = _advItems[idx];
+
+  document.getElementById('advInputName').value = item.name;
+  document.getElementById('advInputDesc').value = item.desc;
+  document.getElementById('advInputReq').value = item.req;
+
+  document.getElementById('advInputDescWrap').style.display = (item.mode === 'main' ? 'none' : '');
+
+  // 更新侧边栏选中状态
+  var bar = document.getElementById('advSidebar');
+  bar.querySelectorAll('.adv-item').forEach(function(el, i) {
+    el.classList.toggle('active', i === idx);
+  });
+  
+  // 滚动确保可见
+  var targetEl = bar.querySelectorAll('.adv-item')[idx];
+  if(targetEl) targetEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function saveAdvSettings() {
+  // 保存当前最后一项
+  if (_advItems[_advActiveIdx]) {
+    _advItems[_advActiveIdx].name = document.getElementById('advInputName').value;
+    _advItems[_advActiveIdx].desc = document.getElementById('advInputDesc').value;
+    _advItems[_advActiveIdx].req = document.getElementById('advInputReq').value;
+  }
+
+  _advItems.forEach(function(item) {
+    var el = item.el;
+    // 更新选择状态
+    el.classList.toggle('sel', item.sel);
+    // 更新文本内容
+    if (item.mode === 'main') {
+      var nameEl = el.querySelector('.img-cfg-name');
+      if (nameEl) nameEl.textContent = item.name;
+    } else {
+      var nameEl = el.querySelector('.mod-name');
+      var descEl = el.querySelector('.mod-desc');
+      if (nameEl) nameEl.textContent = item.name;
+      if (descEl) descEl.textContent = item.desc;
+    }
+    // 更新存储的属性
+    el._ceReq = item.req;
+  });
+
+  updateBtn();
+  closeAdvSettings();
+}
+
+function handleAdvKeyDown(e) {
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (_advActiveIdx > 0) selectAdvItem(_advActiveIdx - 1);
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (_advActiveIdx < _advItems.length - 1) selectAdvItem(_advActiveIdx + 1);
+  } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    saveAdvSettings();
+  }
+}
 </script>
 
 <!-- ══ 板块编辑弹窗（主图 & 详情图通用） ══ -->
