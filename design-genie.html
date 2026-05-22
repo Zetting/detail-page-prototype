@@ -552,14 +552,46 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
   width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,.12);flex-shrink:0;
 }
 /* 背景选择面板 */
-.bg-pick-pop{
+.bg-pick-pop, .logo-pick-pop{
   position:absolute;bottom:calc(100% + 8px);left:0;z-index:500;
   background:#fff;border:1px solid var(--border);border-radius:14px;
   box-shadow:0 6px 24px rgba(0,0,0,.12);padding:14px 14px 10px;
   width:220px;display:none;
 }
-.bg-pick-pop.show{display:block;}
-.bg-pick-title{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:10px;}
+.bg-pick-pop.show, .logo-pick-pop.show{display:block;}
+.bg-pick-title, .logo-pick-title{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:11px;font-weight:600;color:var(--muted);margin-bottom:10px;
+}
+.logo-clear-btn{
+  color:var(--pp);cursor:pointer;font-weight:500;
+  padding:2px 6px;border-radius:4px;transition:background 0.2s;
+}
+.logo-clear-btn:hover{background:var(--soft);}
+
+.logo-upload-area{
+  width:100%;height:60px;background:var(--bg);border:1.5px dashed var(--border);
+  border-radius:10px;margin-bottom:12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.logo-upload-area:hover{border-color:var(--pp);}
+.logo-preview-box{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+.logo-preview-empty{font-size:11px;color:var(--muted);}
+.logo-preview-img{max-width:80%;max-height:80%;object-fit:contain;}
+
+.logo-cfg-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;letter-spacing:0.02em;}
+.logo-pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:12px;}
+.logo-pos-item{height:20px;background:var(--bg);border-radius:4px;cursor:pointer;border:1.5px solid transparent;transition:all .12s;}
+.logo-pos-item:hover{background:var(--border);}
+.logo-pos-item.active{background:var(--soft);border-color:var(--pp);}
+
+.logo-size-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.logo-size-row input[type="range"]{flex:1;accent-color:var(--pp);height:4px;cursor:pointer;}
+#logoSizeVal{font-size:11px;color:var(--text);font-weight:600;width:30px;text-align:right;}
+
+.chip-swatch{
+  width:10px;height:10px;border-radius:50%;margin-right:2px;border:1px solid rgba(0,0,0,0.05);
+}
 .bg-color-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:10px;}
 .bg-color-swatch{
   width:24px;height:24px;border-radius:6px;cursor:pointer;
@@ -698,7 +730,7 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
 .mod-more-left:hover{background:rgba(99,102,241,0.05);}
 .mod-more-left:hover span{color:var(--pp);}
 .mod-more-card.open .mod-more-left span{color:var(--pp);}
-.mod-more-card.open #modMoreIcSvg{transform:rotate(180deg);}
+.mod-more-card.open #modMoreIcSvg, .mod-more-card.open #modMoreIcSvgAdv{transform:rotate(180deg);color:var(--pp);}
 .mod-more-sep{width:1px;background:var(--border-light);flex-shrink:0;}
 .mod-more-right{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -740,37 +772,37 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
 .mod-menu-mask{display:none;}
 .mod-menu-pop{
   position:fixed;z-index:900;
-  width:200px;background:#fff;
-  border:1px solid var(--border);border-radius:13px;
-  box-shadow:0 6px 24px rgba(0,0,0,.11);
+  width:210px;background:#fff;
+  border:1px solid rgba(0,0,0,.08);border-radius:12px;
+  box-shadow:0 8px 32px rgba(0,0,0,.12);
   overflow:hidden;
   opacity:0;pointer-events:none;
-  transform:scale(.94) translateY(-4px);
+  transform:scale(.96) translateY(-4px);
   transform-origin:top left;
-  transition:opacity .14s ease,transform .14s ease;
+  transition:opacity .15s cubic-bezier(0.16, 1, 0.3, 1), transform .15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .mod-menu-pop.show{
   opacity:1;pointer-events:auto;
   transform:scale(1) translateY(0);
 }
 .mod-menu-drawer-hd{
-  padding:10px 12px 8px;
-  border-bottom:1px solid var(--border);
+  padding:14px 16px 10px;
+  background:#fff;
 }
-.mod-menu-drawer-title{font-size:11px;font-weight:600;color:var(--muted);}
-.mod-menu-drawer-close{display:none;}
-.mod-menu-drawer-body{padding:8px;}
-.mod-menu-section-title{display:none;}
+.mod-menu-drawer-title{font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.04em;opacity:0.5;}
+.mod-menu-drawer-body{padding:6px;}
 .mod-menu-item{
-  display:flex;align-items:center;gap:8px;padding:9px 10px;
-  font-size:12px;color:var(--text);cursor:pointer;border-radius:8px;
-  transition:background .1s;font-family:inherit;background:none;border:none;width:100%;text-align:left;
+  display:flex;align-items:center;gap:10px;padding:10px 14px;
+  font-size:13px;color:var(--text);cursor:pointer;border-radius:8px;
+  transition:all .15s ease;font-family:inherit;background:none;border:none;width:100%;text-align:left;
 }
-.mod-menu-item:hover{background:var(--soft);}
-.mod-menu-item.active{color:var(--pp);background:var(--soft);}
-.mod-menu-danger{color:#e74c3c;}
-.mod-menu-danger:hover{background:#fff5f5;}
-.mod-menu-sep{height:1px;background:var(--border);margin:10px 0;}
+.mod-menu-item:hover{background:var(--soft);color:var(--pp);}
+.mod-menu-item.active{color:var(--pp);background:rgba(99,102,241,0.08);font-weight:600;}
+.mod-menu-item svg{opacity:0.7;}
+.mod-menu-item:hover svg{opacity:1;}
+.mod-menu-danger{color:#ef4444;}
+.mod-menu-danger:hover{background:#fef2f2;color:#ef4444;}
+.mod-menu-sep{height:1px;background:var(--border);margin:6px 0;opacity:0.6;}
 
 /* ══ 详情页配置保存条（极简版） ══ */
 .cfg-bar{
@@ -778,61 +810,62 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
 }
 .cfg-bar-trigger{
   display:flex;align-items:center;gap:0;
-  border:1.5px solid #d0ccf5;border-radius:10px;
+  border:1px solid var(--border);border-radius:10px;
   background:#fff;cursor:pointer;
-  transition:border-color .15s;user-select:none;
+  transition:all .15s;user-select:none;
   padding:0;overflow:hidden;
 }
-.cfg-bar-trigger:hover,.cfg-bar-trigger.open{border-color:#6366F1;}
+.cfg-bar-trigger:hover,.cfg-bar-trigger.open{border-color:var(--pp);box-shadow:0 2px 8px rgba(99,102,241,0.08);}
 .cfg-bar-trigger-label{
-  font-size:12px;font-weight:600;color:#6366F1;
-  padding:9px 10px 9px 14px;flex-shrink:0;white-space:nowrap;
-  border-right:1.5px solid #ede9ff;
+  font-size:11px;font-weight:600;color:var(--muted);
+  padding:8px 10px 8px 12px;flex-shrink:0;white-space:nowrap;
+  border-right:1px solid var(--border);
 }
 .cfg-bar-trigger-val{
-  flex:1;font-size:12px;color:#888;
-  padding:9px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  flex:1;font-size:12px;color:var(--muted);
+  padding:8px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.cfg-bar-trigger-val.selected{color:#1a1a2e;}
+.cfg-bar-trigger-val.selected{color:var(--text);font-weight:500;}
 .cfg-bar-trigger-arrow{
-  padding:9px 12px;color:#aaa;flex-shrink:0;
-  transition:transform .18s;
+  padding:8px 10px;color:#ccc;flex-shrink:0;
+  transition:transform .2s;
 }
 .cfg-bar-trigger.open .cfg-bar-trigger-arrow{transform:rotate(180deg);color:#6366F1;}
 
 /* 下拉菜单 */
 .cfg-bar-drop{
   display:none;position:absolute;bottom:calc(100% + 6px);left:0;right:0;
-  background:#fff;border-radius:10px;z-index:600;
-  box-shadow:0 4px 24px rgba(0,0,0,.10);
-  border:1px solid #ede9ff;overflow:hidden;
+  background:#fff;border-radius:12px;z-index:600;
+  box-shadow:0 8px 32px rgba(0,0,0,.12);
+  border:1px solid rgba(0,0,0,.06);overflow:hidden;
 }
 .cfg-bar-drop.open{display:block;animation:cfgDropIn .16s ease;}
 @keyframes cfgDropIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 
 /* 搜索框 */
 .cfg-drop-search-row{
-  display:flex;align-items:center;gap:6px;
-  padding:8px 10px;border-bottom:1px solid #f0eeff;
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;border-bottom:1px solid var(--border);
+  background:#f9f9fb;
 }
 .cfg-drop-search{
-  flex:1;padding:5px 8px;border:1.5px solid #ede9ff;border-radius:7px;
-  font-size:11px;font-family:inherit;outline:none;background:#fafafe;
-  transition:border-color .13s;
+  flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;
+  font-size:11px;font-family:inherit;outline:none;background:#fff;
+  transition:border-color .15s;
 }
-.cfg-drop-search:focus{border-color:#6366F1;}
+.cfg-drop-search:focus{border-color:var(--pp);box-shadow:0 0 0 2px rgba(99,102,241,0.06);}
 
 /* 已保存配置列表 */
-.cfg-drop-list{max-height:160px;overflow-y:auto;padding:4px 0;}
-.cfg-drop-list::-webkit-scrollbar{width:3px;}
-.cfg-drop-list::-webkit-scrollbar-thumb{background:#e0dcff;border-radius:2px;}
+.cfg-drop-list{max-height:180px;overflow-y:auto;padding:6px 0;}
+.cfg-drop-list::-webkit-scrollbar{width:4px;}
+.cfg-drop-list::-webkit-scrollbar-thumb{background:rgba(0,0,0,.05);border-radius:2px;}
 .cfg-drop-item{
   display:flex;align-items:center;justify-content:space-between;
-  padding:8px 14px;cursor:pointer;transition:background .1s;
-  font-size:12px;color:#1a1a2e;
+  padding:9px 14px;cursor:pointer;transition:background .1s;
+  font-size:12px;color:var(--text);
 }
-.cfg-drop-item:hover{background:#f5f4ff;}
-.cfg-drop-item.active{color:#6366F1;font-weight:600;}
+.cfg-drop-item:hover{background:var(--soft);}
+.cfg-drop-item.active{color:var(--pp);font-weight:600;background:var(--soft);}
 .cfg-drop-item-check{
   width:14px;height:14px;flex-shrink:0;margin-right:2px;
   color:#6366F1;display:none;align-items:center;justify-content:center;
@@ -2871,22 +2904,52 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
           <div class="ta-foot">
             <div class="ta-opt-row">
               <!-- 品牌 LOGO -->
-              <div class="ta-opt-chip" id="logoChipAdv" onclick="toggleLogoOpt()">
-                <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 20c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg>
-                品牌 LOGO
+              <div class="ta-opt-chip-wrap" style="position:relative;">
+                <div class="ta-opt-chip" id="logoChip" onclick="toggleLogoPop(event)">
+                  <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 20c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg>
+                  品牌 LOGO
+                </div>
+                <!-- 品牌 LOGO 弹出层 -->
+                <div class="logo-pick-pop" id="logoPickPop" onclick="event.stopPropagation()">
+                  <div class="logo-pick-title">
+                    LOGO 配置
+                    <span class="logo-clear-btn" onclick="clearLogo()">取消</span>
+                  </div>
+                  <div class="logo-upload-area" onclick="this.querySelector('input').click()">
+                    <input type="file" class="logo-input-file" hidden accept="image/*" onchange="handleLogoUpload(this)">
+                    <div id="logoPreview" class="logo-preview-box">
+                      <div class="logo-preview-empty">+ 上传 LOGO</div>
+                    </div>
+                  </div>
+                  <div class="logo-cfg-label">LOGO 位置</div>
+                  <div class="logo-pos-grid" id="logoPosGrid">
+                    <div class="logo-pos-item" data-pos="tl" onclick="setLogoPos('tl')"></div>
+                    <div class="logo-pos-item" data-pos="tc" onclick="setLogoPos('tc')"></div>
+                    <div class="logo-pos-item" data-pos="tr" onclick="setLogoPos('tr')"></div>
+                    <div class="logo-pos-item" data-pos="ml" onclick="setLogoPos('ml')"></div>
+                    <div class="logo-pos-item active" data-pos="mc" onclick="setLogoPos('mc')"></div>
+                    <div class="logo-pos-item" data-pos="mr" onclick="setLogoPos('mr')"></div>
+                    <div class="logo-pos-item" data-pos="bl" onclick="setLogoPos('bl')"></div>
+                    <div class="logo-pos-item" data-pos="bc" onclick="setLogoPos('bc')"></div>
+                    <div class="logo-pos-item" data-pos="br" onclick="setLogoPos('br')"></div>
+                  </div>
+                  <div class="logo-cfg-label">LOGO 大小</div>
+                  <div class="logo-size-row">
+                    <input type="range" id="logoSizeRange" min="10" max="100" value="30" oninput="setLogoSize(this.value)">
+                    <span id="logoSizeVal">30%</span>
+                  </div>
+                </div>
               </div>
+
               <!-- 选择背景 -->
-              <div class="ta-opt-chip" id="bgChipAdv" onclick="toggleBgPicker(event)">
-                <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                选择背景
-              </div>
-              <!-- 选择背景 -->
-              <div class="ta-opt-chip" id="bgChip" onclick="toggleBgPicker(event)">
-                <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                选择背景
+              <div class="ta-opt-chip-wrap" style="position:relative;">
+                <div class="ta-opt-chip" id="bgChip" onclick="toggleBgPicker(event)">
+                  <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <div class="chip-swatch" style="display:none"></div>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  选择背景
+                </div>
               </div>
             </div>
             <div class="ta-cnt"><span id="taCnt">0</span> / 500</div>
@@ -3615,15 +3678,53 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
           </div>
           <div class="ta-foot">
             <div class="ta-opt-row">
-              <div class="ta-opt-chip" id="logoChipAdv" onclick="toggleLogoOpt()">
-                <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 20c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg>
-                品牌 LOGO
+              <!-- 品牌 LOGO -->
+              <div class="ta-opt-chip-wrap" style="position:relative;">
+                <div class="ta-opt-chip" id="logoChipAdv" onclick="toggleLogoPop(event)">
+                  <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 20c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg>
+                  品牌 LOGO
+                </div>
+                <!-- 品牌 LOGO 弹出层 -->
+                <div class="logo-pick-pop" id="logoPickPopAdv" onclick="event.stopPropagation()">
+                  <div class="logo-pick-title">
+                    LOGO 配置
+                    <span class="logo-clear-btn" onclick="clearLogo()">取消</span>
+                  </div>
+                  <div class="logo-upload-area" onclick="this.querySelector('input').click()">
+                    <input type="file" class="logo-input-file" hidden accept="image/*" onchange="handleLogoUpload(this)">
+                    <div id="logoPreview" class="logo-preview-box">
+                      <div class="logo-preview-empty">+ 上传 LOGO</div>
+                    </div>
+                  </div>
+                  <div class="logo-cfg-label">LOGO 位置</div>
+                  <div class="logo-pos-grid" id="logoPosGrid">
+                    <div class="logo-pos-item" data-pos="tl" onclick="setLogoPos('tl')"></div>
+                    <div class="logo-pos-item" data-pos="tc" onclick="setLogoPos('tc')"></div>
+                    <div class="logo-pos-item" data-pos="tr" onclick="setLogoPos('tr')"></div>
+                    <div class="logo-pos-item" data-pos="ml" onclick="setLogoPos('ml')"></div>
+                    <div class="logo-pos-item active" data-pos="mc" onclick="setLogoPos('mc')"></div>
+                    <div class="logo-pos-item" data-pos="mr" onclick="setLogoPos('mr')"></div>
+                    <div class="logo-pos-item" data-pos="bl" onclick="setLogoPos('bl')"></div>
+                    <div class="logo-pos-item" data-pos="bc" onclick="setLogoPos('bc')"></div>
+                    <div class="logo-pos-item" data-pos="br" onclick="setLogoPos('br')"></div>
+                  </div>
+                  <div class="logo-cfg-label">LOGO 大小</div>
+                  <div class="logo-size-row">
+                    <input type="range" id="logoSizeRange" min="10" max="100" value="30" oninput="setLogoSize(this.value)">
+                    <span id="logoSizeVal">30%</span>
+                  </div>
+                </div>
               </div>
-              <div class="ta-opt-chip" id="bgChipAdv" onclick="toggleBgPicker(event)">
-                <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                选择背景
+
+              <!-- 选择背景 -->
+              <div class="ta-opt-chip-wrap" style="position:relative;">
+                <div class="ta-opt-chip" id="bgChipAdv" onclick="toggleBgPicker(event)">
+                  <svg class="chip-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <div id="bgChipSwatch" class="chip-swatch" style="display:none"></div>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  选择背景
+                </div>
               </div>
             </div>
             <div class="ta-cnt"><span id="taCntAdv">0</span> / 500</div>
@@ -5594,6 +5695,7 @@ function _updateModalCnt(n){
 document.addEventListener('DOMContentLoaded', function(){
   // 初始化配置区空态
   _renderAdvGrid();
+  _initBgGrid();
   var closeBtn = document.querySelector('.ta-modal-close');
   if(closeBtn) closeBtn.addEventListener('click', _doCloseTaModal);
   // Esc 关闭
@@ -5611,67 +5713,158 @@ function openAiAnalyze(){
 
 /* ── 品牌LOGO & 背景选项 ── */
 var _logoActive = false;
-var _bgColor    = null; // null = 未选
+var _logoData = { url: null, pos: 'mc', size: 30 };
+var _bgColor = null;
+var REF_BADGE = '<div class="mod-ref-dot"></div>';
 
-var _BG_COLORS = [
-  '#ffffff','#f5f5f5','#1a1a1a','#2c3e50',
-  '#e8f4fd','#fef9e7','#eafaf1','#fdf2f8',
-  '#ff6b6b','#ffa07a','#ffd700','#90ee90',
-  '#87ceeb','#dda0dd','#f0e68c','#b0c4de',
-  '#ff9a9e','#a18cd1','#ffecd2','#2d6a4f'
-];
+function clearLogo(){
+  _logoActive = false;
+  _logoData = { url: null, pos: 'mc', size: 30 };
+  document.querySelectorAll('#logoChip, #logoChipAdv').forEach(function(chip){ chip.classList.remove('active'); });
+  document.querySelectorAll('.logo-preview-box').forEach(function(box){
+    box.innerHTML = '<div class="logo-preview-empty">+ 上传 LOGO</div>';
+  });
+  document.querySelectorAll('.logo-pos-item').forEach(function(item){
+    item.classList.toggle('active', item.dataset.pos === 'mc');
+  });
+  document.querySelectorAll('#logoSizeRange').forEach(function(el){ el.value = 30; });
+  document.querySelectorAll('#logoSizeVal').forEach(function(el){ el.textContent = '30%'; });
+  _renderBadges();
+}
 
 function _initBgGrid(){
-  var grid = document.getElementById('bgColorGrid');
-  if(!grid || grid.children.length) return;
-  _BG_COLORS.forEach(function(c){
-    var s = document.createElement('div');
-    s.className = 'bg-color-swatch';
-    s.style.background = c;
-    if(c==='#ffffff') s.style.border='2px solid #e0e0e0';
-    s.title = c;
-    s.onclick = function(){ pickBgColor(c); };
-    grid.appendChild(s);
+  var colors = ['#ffffff','#f8f9fa','#f1f2f6','#e1e2e6','#cccccc','#999999','#333333','#000000','#ff4757','#ff7f50','#ffa502','#2ed573','#1e90ff','#3742fa','#70a1ff'];
+  var grids = [document.getElementById('bgColorGrid'), document.getElementById('bgColorGridAdv')];
+  grids.forEach(function(grid){
+    if(!grid || grid.children.length > 0) return;
+    colors.forEach(function(c){
+      var s = document.createElement('div');
+      s.className = 'bg-color-swatch';
+      s.style.background = c;
+      s.onclick = function(){ pickBgColor(c); };
+      grid.appendChild(s);
+    });
   });
 }
 
-function toggleLogoOpt(){
-  _logoActive = !_logoActive;
-  var chip1 = document.getElementById('logoChip');
-  var chip2 = document.getElementById('logoChipAdv');
-  if(chip1) chip1.classList.toggle('active', _logoActive);
-  if(chip2) chip2.classList.toggle('active', _logoActive);
+function toggleLogoPop(e){
+  e.stopPropagation();
+  var pop = e.currentTarget.parentNode.querySelector('.logo-pick-pop');
+  if(!pop) return;
+  var isOpen = pop.classList.contains('show');
+  
+  // 关闭所有
+  document.querySelectorAll('.bg-pick-pop, .logo-pick-pop').forEach(function(p){ p.classList.remove('show'); });
+
+  if(!isOpen){
+    pop.classList.add('show');
+    setTimeout(function(){
+      var closeLogo = function(ev){
+        if(!pop.contains(ev.target)){
+          pop.classList.remove('show');
+          document.removeEventListener('click', closeLogo);
+        }
+      };
+      document.addEventListener('click', closeLogo);
+    }, 0);
+  }
+}
+
+function handleLogoUpload(input){
+  if(input.files && input.files[0]){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      _logoData.url = e.target.result;
+      _logoActive = true;
+      
+      document.querySelectorAll('.logo-preview-box').forEach(function(box){
+        box.innerHTML = '<img src="'+e.target.result+'" class="logo-preview-img">';
+      });
+      
+      document.querySelectorAll('#logoChip, #logoChipAdv').forEach(function(chip){
+        chip.classList.add('active');
+      });
+      
+      _renderBadges();
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function setLogoPos(pos){
+  _logoData.pos = pos;
+  _logoActive = true;
+  document.querySelectorAll('.logo-pos-item').forEach(function(item){
+    item.classList.toggle('active', item.dataset.pos === pos);
+  });
+  document.querySelectorAll('#logoChip, #logoChipAdv').forEach(function(chip){
+    chip.classList.add('active');
+  });
+  _renderBadges();
+}
+
+function setLogoSize(val){
+  _logoData.size = val;
+  document.querySelectorAll('#logoSizeVal').forEach(function(el){
+    el.textContent = val + '%';
+  });
+  document.querySelectorAll('#logoSizeRange').forEach(function(el){
+    el.value = val;
+  });
   _renderBadges();
 }
 
 function toggleBgPicker(e){
   e.stopPropagation();
   _initBgGrid();
-  var pop = document.getElementById('bgPickPop');
+  var pop = e.currentTarget.parentNode.querySelector('.bg-pick-pop') || (e.currentTarget.id==='bgChipAdv'?document.getElementById('bgPickPopAdv'):document.getElementById('bgPickPop'));
+  if(!pop) return;
   var isOpen = pop.classList.contains('show');
-  pop.classList.toggle('show', !isOpen);
+  
+  // 关闭其它
+  document.querySelectorAll('.bg-pick-pop, .logo-pick-pop').forEach(function(p){ p.classList.remove('show'); });
+
   if(!isOpen){
+    pop.classList.add('show');
     setTimeout(function(){
-      document.addEventListener('click', _closeBgPop, {once:true});
+      var closeBg = function(ev){
+        if(!pop.contains(ev.target)){
+          pop.classList.remove('show');
+          document.removeEventListener('click', closeBg);
+        }
+      };
+      document.addEventListener('click', closeBg);
     }, 0);
   }
 }
 
 function _closeBgPop(){
-  document.getElementById('bgPickPop').classList.remove('show');
+  document.querySelectorAll('.bg-pick-pop').forEach(function(p){ p.classList.remove('show'); });
 }
 
 function pickBgColor(color){
   _bgColor = color;
   // 更新 swatch 高亮
   document.querySelectorAll('.bg-color-swatch').forEach(function(s){
-    s.classList.toggle('picked', s.style.background === color || (color && _normalizeColor(s.style.background)===_normalizeColor(color)));
+    var sCol = _normalizeColor(s.style.background);
+    var targetCol = _normalizeColor(color);
+    s.classList.toggle('picked', color && sCol === targetCol);
   });
-  // chip 激活态
-  var chip1 = document.getElementById('bgChip');
-  var chip2 = document.getElementById('bgChipAdv');
-  if(chip1) chip1.classList.toggle('active', !!color);
-  if(chip2) chip2.classList.toggle('active', !!color);
+  
+  // chip 激活态与回显
+  document.querySelectorAll('#bgChip, #bgChipAdv').forEach(function(chip){
+    chip.classList.toggle('active', !!color);
+    var swatch = chip.querySelector('.chip-swatch');
+    if(swatch){
+      if(color){
+        swatch.style.display = 'block';
+        swatch.style.background = color;
+      } else {
+        swatch.style.display = 'none';
+      }
+    }
+  });
+
   _closeBgPop();
   _renderBadges();
 }
@@ -5688,28 +5881,75 @@ function _normalizeColor(c){
 }
 
 function _renderBadges(){
-  var wrap = document.getElementById('taSelBadges');
-  wrap.innerHTML = '';
-
-  if(_logoActive){
-    var b = document.createElement('div');
-    b.className = 'ta-badge ta-badge-logo';
-    b.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 20c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg> LOGO';
-    wrap.appendChild(b);
-  }
-
-  if(_bgColor){
-    var b2 = document.createElement('div');
-    b2.className = 'ta-badge ta-badge-bg';
-    var dot = '<span class="badge-color-dot" style="background:' + _bgColor + ';' + (_bgColor==='#ffffff'?'border:1px solid #ccc;':'') + '"></span>';
-    b2.innerHTML = dot + ' 背景';
-    wrap.appendChild(b2);
-  }
+  var wraps = [document.getElementById('taSelBadges'), document.getElementById('taSelBadgesAdv')];
+  wraps.forEach(function(wrap){
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    if(_logoActive){
+      var b = document.createElement('div');
+      b.className = 'ta-badge ta-badge-logo';
+      b.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 20c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg> LOGO';
+      wrap.appendChild(b);
+    }
+    if(_bgColor){
+      var b2 = document.createElement('div');
+      b2.className = 'ta-badge ta-badge-bg';
+      var dot = '<span class="badge-color-dot" style="background:' + _bgColor + ';' + (_bgColor==='#ffffff'?'border:1px solid #ccc;':'') + '"></span>';
+      b2.innerHTML = dot + ' 背景';
+      wrap.appendChild(b2);
+    }
+  });
 }
 
-document.addEventListener('DOMContentLoaded', function(){
-  _initBgGrid();
-});
+/* ── 手机扫码 ── */
+var _uploadTarget = 'aplus';
+let _qrTimer,_qrSec=299;
+const QR_PATTERN=[
+  1,1,1,1,1,1,1,
+  1,0,0,0,0,0,1,
+  1,0,1,1,1,0,1,
+  1,0,1,1,1,0,1,
+  1,0,1,1,1,0,1,
+  1,0,0,0,0,0,1,
+  1,1,1,1,1,1,1
+];
+function buildQr(){
+  const g=document.getElementById('qrInner');
+  if(!g) return;
+  g.innerHTML='';
+  const pat=[...QR_PATTERN];
+  while(pat.length<49) pat.push(Math.random()>.5?1:0);
+  g.innerHTML=pat.map(v=>`<div style="background:${v?'#1a1a2e':'#fff'}"></div>`).join('');
+}
+function startQrTimer(){
+  _qrSec=299;
+  clearInterval(_qrTimer);
+  _qrTimer=setInterval(()=>{
+    _qrSec--;
+    const m=Math.floor(_qrSec/60).toString().padStart(2,'0');
+    const s=(_qrSec%60).toString().padStart(2,'0');
+    var el = document.getElementById('qrExpire');
+    if(el) el.textContent=`二维码有效期：${m}:${s}`;
+    if(_qrSec<=0){
+      clearInterval(_qrTimer);
+      if(el) el.textContent='二维码已过期，请刷新';
+    }
+  },1000);
+}
+function openQr(target){
+  _uploadTarget = target || 'aplus';
+  buildQr();
+  startQrTimer();
+  var mask = document.getElementById('qrMask');
+  if(mask) mask.classList.add('show');
+}
+function closeQr(e){
+  if(e && e.target !== document.getElementById('qrMask')) return;
+  var mask = document.getElementById('qrMask');
+  if(mask) mask.classList.remove('show');
+  clearInterval(_qrTimer);
+}
+function refreshQr(){buildQr();startQrTimer();}
 
 /* ── mod-check 单击勾选（card 单击改为打开弹窗后，勾选收归此处） ── */
 function toggleModCard(e, checkEl){
@@ -5722,6 +5962,9 @@ function toggleModCard(e, checkEl){
 function toggleMod(el){
   if(el.querySelector('.mod-name[contenteditable="true"]')) return;
   el.classList.toggle('sel');
+  if(el.closest('#modGridAdv') || el.closest('#modExtraGridAdv')){
+    _syncAdvMods();
+  }
   updateBtn();
   syncSelAllBtn();
 }
@@ -5888,7 +6131,36 @@ function saveCardEdit(){
   // 右上角小圆点：有参考图时亮起
   _ceTarget.classList.toggle('has-cfg', _ceRefImages.length > 0);
 
+  if(_ceMode === 'detail' && !!(_ceTarget.closest('#modGridAdv') || _ceTarget.closest('#modExtraGridAdv'))){
+    _syncAdvMods();
+  }
+
   closeCardEdit();
+}
+
+function _syncAdvMods(){
+  var mods = [];
+  var grids = [document.getElementById('modGridAdv'), document.getElementById('modExtraGridAdv')];
+  grids.forEach(function(grid){
+    if(!grid) return;
+    [...grid.children].forEach(function(card){
+      if(card.classList.contains('mod-more-card')) return;
+      var name = card.querySelector('.mod-name') ? card.querySelector('.mod-name').textContent.trim() : '';
+      var desc = card.querySelector('.mod-desc') ? card.querySelector('.mod-desc').textContent.trim() : '';
+      var sel  = card.classList.contains('sel');
+      mods.push({
+        name: name,
+        desc: desc,
+        sel: sel,
+        _ceType: card._ceType,
+        _ceSize: card._ceSize,
+        _ceReq: card._ceReq,
+        _ceRefImages: card._ceRefImages
+      });
+    });
+  });
+  _advMods = mods;
+  updateBtn();
 }
 
 function closeCardEdit(e){
@@ -6596,10 +6868,15 @@ function delModCard(e, btn){
   e.stopPropagation();
   var card = btn.closest('.mod-card');
   if(!card) return;
+  var isAdv = !!(card.closest('#modGridAdv') || card.closest('#modExtraGridAdv'));
   card.style.transition='opacity .18s,transform .18s';
   card.style.opacity='0';
   card.style.transform='scale(.92)';
-  setTimeout(function(){ card.remove(); updateBtn(); }, 180);
+  setTimeout(function(){ 
+    card.remove(); 
+    if(isAdv) _syncAdvMods();
+    else updateBtn(); 
+  }, 180);
 }
 
 /* ── 拖拽排序 ── */
@@ -6625,10 +6902,12 @@ function _onDrop(e){
   this.classList.remove('drag-over');
   if(!_dragSrc || _dragSrc === this) return;
   var grid = this.parentElement;
+  var isAdv = !!(grid.id === 'modGridAdv' || grid.id === 'modExtraGridAdv');
   var srcIdx = [...grid.children].indexOf(_dragSrc);
   var tgtIdx = [...grid.children].indexOf(this);
   if(tgtIdx > srcIdx) grid.insertBefore(_dragSrc, this.nextSibling);
   else                grid.insertBefore(_dragSrc, this);
+  if(isAdv) _syncAdvMods();
 }
 function _onDragEnd(){
   this.classList.remove('dragging');
@@ -6751,29 +7030,52 @@ function toggleModMoreAdv(){
   var card  = document.getElementById('modMoreCardAdv');
   var label = document.getElementById('modMoreLabelAdv');
   var ico   = document.getElementById('modMoreIcSvgAdv');
-  var isOpen = grid.style.display !== 'none';
+  if(!grid) return;
+  var isOpen = grid.style.display === 'grid';
   if(isOpen){
     grid.style.display = 'none';
-    card.classList.remove('open');
-    label.textContent = '更多';
-    ico.style.transform = '';
+    if(card) card.classList.remove('open');
+    if(label) label.textContent = '更多';
+    if(ico) ico.style.transform = '';
   } else {
     grid.style.display = 'grid';
-    card.classList.add('open');
-    label.textContent = '收起';
-    ico.style.transform = 'rotate(180deg)';
+    if(card) card.classList.add('open');
+    if(label) label.textContent = '收起';
+    if(ico) ico.style.transform = 'rotate(180deg)';
   }
 }
 
 /* ── 电商套图面板：重置 / 添加 ── */
 var _ADV_DEFAULT_CARDS = [
-  {name:'首屏主视觉', desc:'传递核心价值',     sel:true},
-  {name:'核心卖点图', desc:'突出差异优势',     sel:true},
-  {name:'使用场景图', desc:'呈现真实使用场景', sel:true},
-  {name:'多角度图',   desc:'多角度呈现外观',  sel:true},
-  {name:'商品细节图', desc:'聚焦材质与工艺',  sel:true},
+  {name:'首屏主视觉', desc:'传递核心价值',     sel:false},
+  {name:'核心卖点图', desc:'突出差异优势',     sel:false},
+  {name:'使用场景图', desc:'呈现真实使用场景', sel:false},
+  {name:'多角度图',   desc:'多角度呈现外观',  sel:false},
+  {name:'商品细节图', desc:'聚焦材质与工艺',  sel:false},
   {name:'效果对比图', desc:'使用前后效果对比', sel:false},
 ];
+
+function _makeModCard(item){
+  var DEL_BTN = '<button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+  var CHECK = '<div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>';
+  var card = document.createElement('div');
+  card.className = 'mod-card' + (item.sel ? ' sel' : '');
+  card.draggable = true;
+  card.setAttribute('onclick', 'toggleMod(this)');
+  card.setAttribute('ondblclick', "openCardEdit(event,this,'detail')");
+  card.innerHTML = DEL_BTN + CHECK +
+    '<span onclick="openCardEdit(event,this,\'detail\')" class="mod-name">' + item.name + '</span>' +
+    '<span class="mod-desc">' + item.desc + '</span>' +
+    REF_BADGE;
+  
+  card._ceType = item._ceType;
+  card._ceSize = item._ceSize;
+  card._ceReq = item._ceReq;
+  card._ceRefImages = item._ceRefImages || [];
+  if(card._ceRefImages.length > 0) card.classList.add('has-cfg');
+
+  return card;
+}
 
 function _makeAdvCard(item){
   var DEL_BTN = '<button class="mod-del-btn" onclick="delModCard(event,this)" title="删除此板块">'
@@ -6788,32 +7090,79 @@ function _makeAdvCard(item){
   card.setAttribute('onclick', 'toggleMod(this)');
   card.setAttribute('ondblclick', "openCardEdit(event,this,'detail')");
   card.innerHTML = DEL_BTN
-    + '<span class="mod-type-tag"></span>'
+    + '<span class="mod-type-tag">' + (item._ceType || '') + '</span>'
     + CHECK
     + '<span onclick="openCardEdit(event,this,\'detail\')" class="mod-name">' + item.name + '</span>'
-    + '<span class="mod-desc">' + item.desc + '</span>';
+    + '<span class="mod-desc">' + item.desc + '</span>'
+    + REF_BADGE;
+  
+  // 恢复之前保存的数据
+  card._ceType = item._ceType;
+  card._ceSize = item._ceSize;
+  card._ceReq = item._ceReq;
+  card._ceRefImages = item._ceRefImages || [];
+  if(card._ceRefImages.length > 0) card.classList.add('has-cfg');
+
   return card;
 }
 
 function resetAdvCfg(){
-  // 按 name 建默认 sel 映射
-  var defMap = {};
-  _ADV_DEFAULT_CARDS.forEach(function(item){ defMap[item.name] = item.sel; });
+  var mainGrid = document.getElementById('modGridAdv');
+  if(!mainGrid) return;
+  
+  // 保留更多卡片，避免被 innerHTML = '' 彻底删掉失去引用
+  var moreCard = document.getElementById('modMoreCardAdv');
+  
+  // 清空现有卡片
+  mainGrid.innerHTML = '';
+  
+  // 根据 _ADV_DEFAULT_CARDS 重建
+  _ADV_DEFAULT_CARDS.forEach(function(item){
+    var card = _makeAdvCard(item);
+    mainGrid.appendChild(card);
+  });
+  
+  // 重新添加“更多”占位卡片
+  if(moreCard) mainGrid.appendChild(moreCard);
 
-  var allCards = [
-    ...document.querySelectorAll('#modGridAdv .mod-card:not(.mod-more-card)'),
-    ...document.querySelectorAll('#modExtraGridAdv .mod-card')
-  ];
-  allCards.forEach(function(card){
-    var nameEl = card.querySelector('.mod-name');
-    var name = nameEl ? nameEl.textContent.trim() : '';
-    if(name in defMap){
-      if(defMap[name]) card.classList.add('sel');
-      else card.classList.remove('sel');
-    }
+  // 确保额外网格也是收起状态
+  var extraGrid = document.getElementById('modExtraGridAdv');
+  if(extraGrid) extraGrid.style.display = 'none';
+  var label = document.getElementById('modMoreLabelAdv');
+  if(label) label.textContent = '更多';
+  var ico = document.getElementById('modMoreIcSvgAdv');
+  if(ico) ico.style.transform = '';
+
+  // 重置其它状态
+  _logoActive = false;
+  _logoData = { url: null, pos: 'mc', size: 30 };
+  _bgColor = null;
+
+  // 重置 UI
+  document.querySelectorAll('#logoChip, #logoChipAdv').forEach(function(chip){
+    chip.classList.remove('active');
+  });
+  
+  document.querySelectorAll('.logo-preview-box').forEach(function(box){
+    box.innerHTML = '<div class="logo-preview-empty">+ 上传 LOGO</div>';
+  });
+  
+  document.querySelectorAll('.logo-pos-item').forEach(function(item){
+    item.classList.toggle('active', item.dataset.pos === 'mc');
+  });
+  
+  document.querySelectorAll('#logoSizeRange').forEach(function(el){ el.value = 30; });
+  document.querySelectorAll('#logoSizeVal').forEach(function(el){ el.textContent = '30%'; });
+
+  document.querySelectorAll('#bgChip, #bgChipAdv').forEach(function(chip){
+    chip.classList.remove('active');
+    var swatch = chip.querySelector('.chip-swatch');
+    if(swatch) swatch.style.display = 'none';
   });
 
+  _renderBadges();
   updateBtn();
+  _syncAdvMods();
 }
 
 function addAdvModCard(){
@@ -6840,52 +7189,34 @@ function toggleSelAllAdv(){
 
 /* ── 电商套图面板：重置板块 ── */
 function resetModsAdv(){
-  var grid = document.getElementById('modGridAdv');
-  if(!grid) return;
-  var cards = grid.querySelectorAll('.mod-card:not(.mod-more-card)');
-  // 恢复：前5张 sel，其余去掉 sel
-  cards.forEach(function(c, i){
-    if(i < 5) c.classList.add('sel'); else c.classList.remove('sel');
+  var mainGrid = document.getElementById('modGridAdv');
+  if(!mainGrid) return;
+  
+  var moreCard = document.getElementById('modMoreCardAdv');
+  mainGrid.innerHTML = '';
+  
+  _ADV_DEFAULT_CARDS.forEach(function(item){
+    var card = _makeAdvCard(item);
+    mainGrid.appendChild(card);
   });
+  
+  if(moreCard) mainGrid.appendChild(moreCard);
+
   // 收起更多
   var extraGrid = document.getElementById('modExtraGridAdv');
   if(extraGrid){ extraGrid.style.display = 'none'; }
-  var moreCard = document.getElementById('modMoreCardAdv');
-  if(moreCard){ moreCard.classList.remove('open'); }
+  var moreCardAdv = document.getElementById('modMoreCardAdv');
+  if(moreCardAdv){ moreCardAdv.classList.remove('open'); }
   var moreLabel = document.getElementById('modMoreLabelAdv');
   if(moreLabel){ moreLabel.textContent = '更多'; }
   var moreIco = document.getElementById('modMoreIcSvgAdv');
   if(moreIco){ moreIco.style.transform = ''; }
+  _syncAdvMods();
 }
 
 /* ── 电商套图面板：添加新板块 ── */
 function addNewModAdv(){
-  var DEL_BTN = '<button class="mod-del-btn" onclick="delModCard(event,this)"><svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
-  var CHECK   = '<div class="mod-check" onclick="toggleModCard(event,this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>';
-  var card = document.createElement('div');
-  card.className = 'mod-card mod-new sel entering';
-  card.draggable = true;
-  card.setAttribute('onclick', 'toggleMod(this)');
-  card.innerHTML = DEL_BTN + CHECK +
-    '<span onclick="openCardEdit(event,this,\'detail\')" class="mod-name">新板块</span>' +
-    '<span class="mod-desc">双击编辑描述</span>';
-  var grid = document.getElementById('modGridAdv');
-  var moreCard = document.getElementById('modMoreCardAdv');
-  if(grid && moreCard) grid.insertBefore(card, moreCard);
-  else if(grid) grid.appendChild(card);
-  setTimeout(function(){ card.classList.remove('entering'); }, 300);
-  // 进入编辑模式
-  var nameEl = card.querySelector('.mod-name');
-  if(nameEl){
-    nameEl.contentEditable = 'true';
-    nameEl.focus();
-    var range = document.createRange();
-    range.selectNodeContents(nameEl);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    nameEl.addEventListener('blur', function(){ nameEl.contentEditable='false'; }, {once:true});
-    nameEl.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); nameEl.blur(); }}, {once:true});
-  }
+  addAdvModCard();
 }
 
 /* ── ··· 菜单 ── */
@@ -6979,22 +7310,10 @@ function _makeMainRow(name, checked){
 function resetMainCfg(){
   var list = document.getElementById('mainCfgList');
   if(!list) return;
-  // 只恢复每行的勾选状态，不删不重建
-  var rows = list.querySelectorAll('.img-cfg-row');
-  rows.forEach(function(row, i){
-    var def = _mainCfgDefault[i];
-    var checked = def ? def.checked : false;
-    var chk = row.querySelector('.img-cfg-check');
-    var name = row.querySelector('.img-cfg-name');
-    if(checked){
-      row.classList.add('row-checked');
-      if(chk)  chk.classList.add('checked');
-      if(name) name.classList.add('checked');
-    } else {
-      row.classList.remove('row-checked');
-      if(chk)  chk.classList.remove('checked');
-      if(name) name.classList.remove('checked');
-    }
+  list.innerHTML = '';
+  _mainCfgDefault.forEach(function(item){
+    var row = _makeMainRow(item.name, false);
+    list.appendChild(row);
   });
 }
 
@@ -7013,25 +7332,33 @@ function delMainCfgRow(e, btn){
   if(row) row.remove();
 }
 
-/* 重置 — 只恢复勾选状态，不动卡片结构 */
+/* 重置 — 恢复最初板块且默认不勾选 */
 function resetMods(){
-  // 按 name 建默认 sel 映射
-  var defMap = {};
-  _DEFAULT_MODS.forEach(function(item){ defMap[item.name] = item.sel; });
+  var mainGrid = document.getElementById('modGrid');
+  var extraGrid = document.getElementById('modExtraGrid');
+  if(!mainGrid || !extraGrid) return;
 
-  var allCards = [
-    ...document.querySelectorAll('#modGrid .mod-card:not(.mod-more-card)'),
-    ...document.querySelectorAll('#modExtraGrid .mod-card')
-  ];
-  allCards.forEach(function(card){
-    var nameEl = card.querySelector('.mod-name');
-    var name = nameEl ? nameEl.textContent.trim() : '';
-    // 有默认值的按默认，用户自建卡片保持不变
-    if(name in defMap){
-      if(defMap[name]) card.classList.add('sel');
-      else card.classList.remove('sel');
+  var moreCard = document.getElementById('modMoreCard');
+  
+  mainGrid.innerHTML = '';
+  extraGrid.innerHTML = '';
+
+  _DEFAULT_MODS.forEach(function(item, idx){
+    var card = _makeModCard(Object.assign({}, item, {sel: false}));
+    if(idx < 13){
+      mainGrid.appendChild(card);
+    } else {
+      extraGrid.appendChild(card);
     }
   });
+
+  if(moreCard){
+    mainGrid.appendChild(moreCard);
+    moreCard.classList.remove('open');
+  }
+  extraGrid.style.display = 'none';
+  var label = document.getElementById('modMoreLabel');
+  if(label) label.textContent = '更多';
 
   updateBtn();
 }
@@ -7182,8 +7509,12 @@ function startGen(){
   const l=document.getElementById('sLang').value;
   const tp=document.getElementById('sType').value;
   const mods=[...document.querySelectorAll('.mod-card.sel')].map(m=>m.querySelector('.mod-name').textContent);
+  let brandInfo = '';
+  if(_logoActive) brandInfo = ` · Logo: [${_logoData.pos}, ${_logoData.size}%]`;
+  if(_bgColor) brandInfo += ` · 背景色: <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${_bgColor}"></span>`;
+
   document.getElementById('taskParams').innerHTML=
-    `平台: ${p} · 地区: ${r} · 语言: ${l} · ${tp}<br>模块: ${mods.join('、')}`;
+    `平台: ${p} · 地区: ${r} · 语言: ${l} · ${tp}${brandInfo}<br>模块: ${mods.join('、')}`;
 
   document.getElementById('emptyState').style.display='none';
   document.getElementById('resultArea').style.display='none';
@@ -7203,6 +7534,14 @@ function startGenAdv(){
   var btn = document.getElementById('genBtnAdv');
   if(btn.classList.contains('disabled')) return;
 
+  const p=document.getElementById('sPlatform').value;
+  const r=document.getElementById('sRegion').value;
+  const l=document.getElementById('sLang').value;
+  const tp=document.getElementById('sType').value;
+  let brandInfo = '';
+  if(_logoActive) brandInfo = ` · Logo: [${_logoData.pos}, ${_logoData.size}%]`;
+  if(_bgColor) brandInfo += ` · 背景色: <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${_bgColor}"></span>`;
+
   if(_genMode === 'ai'){
     // AI 智能模式：读取内嵌面板配置，展示分析动画
     var activePlans = _iplnData.filter(function(d){ return d.on; });
@@ -7210,6 +7549,10 @@ function startGenAdv(){
       alert('请至少开启一种图片类型');
       return;
     }
+    var mods = activePlans.map(function(d){ return d.key; });
+    document.getElementById('taskParams').innerHTML=
+      `平台: ${p} · 地区: ${r} · 语言: ${l} · ${tp}${brandInfo}<br>模块: ${mods.join('、')}`;
+
     // 更新按钮文案为生成中
     var txt = document.getElementById('genBtnTxtAdv');
     btn.classList.add('disabled');
@@ -7226,8 +7569,6 @@ function startGenAdv(){
     setTimeout(function(){
       if(prog) prog.style.display = 'none';
       if(task) task.style.display = 'flex';
-      // 用板块配置构造模块名列表
-      var mods = activePlans.map(function(d){ return d.key; });
       buildResult(mods);
       if(result) result.style.display = 'block';
       btn.classList.remove('disabled');
@@ -7238,6 +7579,9 @@ function startGenAdv(){
     var mods = Array.from(document.querySelectorAll('#modGridAdv .mod-card.sel')).map(function(m){
       return m.querySelector('.mod-name').textContent;
     });
+    document.getElementById('taskParams').innerHTML=
+      `平台: ${p} · 地区: ${r} · 语言: ${l} · ${tp}${brandInfo}<br>模块: ${mods.join('、')}`;
+
     var empty = document.getElementById('emptyState');
     var result = document.getElementById('resultArea');
     var task = document.getElementById('taskCard');
@@ -7291,62 +7635,8 @@ function buildResult(mods){
   }).join('');
 }
 
-/* ── 手机扫码 ── */
-var _uploadTarget = 'aplus';
-let _qrTimer,_qrSec=299;
-const QR_PATTERN=[
-  1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,0,1,0,0,1,1,0,1,1,1,1,1,0,1,0,1,1,0,1,1,1,0,1,
-  1,0,0,0,0,0,1,0,1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,1,0,0,1,0,1,0,0,1,1,
-  1,0,1,1,1,0,1,0,0,0,1,0,1,1,1,0,1,1,1,0,1,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,1,1,1,0,
-  1,1,1,1,1,1,1,0,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,1,1,1,1,1,1,1,1,0,1,1,1,0,1,1,1,0,
-  0,0,0,0,0,0,0,0,1,1,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,
-];
-function buildQr(){
-  const g=document.getElementById('qrInner');
-  g.innerHTML='';
-  const pat=[...QR_PATTERN];
-  while(pat.length<49) pat.push(Math.random()>.5?1:0);
-  g.innerHTML=pat.map(v=>`<div style="background:${v?'#333':'#fff'}"></div>`).join('');
-}
-function startQrTimer(){
-  clearInterval(_qrTimer);
-  _qrSec=299;
-  _qrTimer=setInterval(()=>{
-    _qrSec--;
-    const m=Math.floor(_qrSec/60).toString().padStart(2,'0');
-    const s=(_qrSec%60).toString().padStart(2,'0');
-    document.getElementById('qrExpire').textContent=`二维码有效期：${m}:${s}`;
-    if(_qrSec<=0){clearInterval(_qrTimer);document.getElementById('qrExpire').textContent='二维码已过期，请刷新';}
-  },1000);
-}
-function openQr(target){
-  _uploadTarget = target || 'aplus';
-  buildQr();startQrTimer();
-  document.getElementById('qrMask').classList.add('show');
-}
-function startQrTimer(){
-  _qrSec=299;
-  clearInterval(_qrTimer);
-  _qrTimer=setInterval(()=>{
-    _qrSec--;
-    const m=Math.floor(_qrSec/60).toString().padStart(2,'0');
-    const s=(_qrSec%60).toString().padStart(2,'0');
-    document.getElementById('qrExpire').textContent=`二维码有效期：${m}:${s}`;
-    if(_qrSec<=0){clearInterval(_qrTimer);document.getElementById('qrExpire').textContent='二维码已过期，请刷新';}
-  },1000);
-}
-function openQr(){
-  buildQr();startQrTimer();
-  document.getElementById('qrMask').classList.add('show');
-}
-function closeQr(e){
-  if(e&&e.target!==document.getElementById('qrMask'))return;
-  clearInterval(_qrTimer);
-  document.getElementById('qrMask').classList.remove('show');
-}
-function refreshQr(){buildQr();startQrTimer();}
-
 /* ── 图片库 ── */
+
 const LIB_ITEMS=[
   {ic:'📦',label:'产品正面'},
   {ic:'🎧',label:'产品侧面'},
@@ -7725,6 +8015,7 @@ function switchScene(scene, el){
   aplus.style.display    = scene==='aplus'    ? '' : 'none';
   aplusAdv.style.display = scene==='aplusAdv' ? '' : 'none';
   copy.style.display     = scene==='copy'     ? '' : 'none';
+  if(scene === 'aplusAdv') _initBgGrid();
 }
 
 /* ════════════════════════════════
