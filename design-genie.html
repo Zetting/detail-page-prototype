@@ -2805,6 +2805,12 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
 .vdo-ta:focus{border-color:var(--primary);background:#fff;box-shadow:var(--shadow-sm);}
 .vdo-ai-btn{position:absolute;bottom:10px;right:10px;background:#fff;border:1px solid var(--border-light);border-radius:18px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--primary);cursor:pointer;box-shadow:var(--shadow-sm);transition:all .2s;}
 .vdo-ai-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
+.tag-mini{
+  font-size:9px; color:var(--primary); background:rgba(99,102,241,0.08); 
+  padding:2px 8px; border-radius:4px; cursor:pointer; transition:all 0.2s;
+  border:0.5px solid rgba(99,102,241,0.2);
+}
+.tag-mini:hover{ background:var(--primary); color:#fff; }
 
 .vdo-model-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .vdo-model-item{border:1px solid var(--border-light);border-radius:12px;padding:10px;background:#fff;display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:all .2s;}
@@ -3331,9 +3337,21 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
           </div>
 
           <div id="vdoScriptPanel" style="display:none;">
+            <div style="margin-bottom:12px;">
+              <div class="opt-label" style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">脚本生成要求 (AI 将根据此要求创作)</div>
+              <div style="position:relative;">
+                <textarea id="vdoScriptReq" class="vdo-ta" placeholder="描述您想要的视频情节、风格或特定镜头..." style="height:60px; padding-bottom:30px;"></textarea>
+                <div style="position:absolute; bottom:8px; left:10px; display:flex; gap:6px;">
+                  <span class="tag-mini" onclick="fillScriptReq('快节奏开箱，动感背景音乐')">示例：快节奏开箱</span>
+                  <span class="tag-mini" onclick="fillScriptReq('生活化场景演示，强调产品易用性')">示例：生活场景</span>
+                  <span class="tag-mini" onclick="fillScriptReq('专业测评风格，展示细节参数')">示例：专业测评</span>
+                </div>
+              </div>
+              <button class="btn-gen-sub" onclick="vdoAiScript()" style="width:100%; margin-top:8px; height:36px; background:var(--bg-main); border:1px solid var(--primary); color:var(--primary); font-weight:700; font-size:12px; border-radius:10px; cursor:pointer;">🪄 立即生成 AI 脚本</button>
+            </div>
             <div style="position:relative;">
-              <textarea class="vdo-ta" id="vdoCustomScript" placeholder="编辑视频分镜脚本或输入您的创意方案..." style="height:180px;"></textarea>
-              <button class="vdo-ai-btn" onclick="vdoAiScript()">🪄 AI 编写脚本</button>
+              <div class="opt-label" style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">分镜脚本内容</div>
+              <textarea class="vdo-ta" id="vdoCustomScript" placeholder="AI 生成的脚本将显示在此处，您也可以手动编辑..." style="height:150px;"></textarea>
             </div>
           </div>
         </div>
@@ -3365,10 +3383,16 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
                     <div class="vdo-model-tag">28岁 · 健壮</div>
                   </div>
                 </div>
-                <!-- 生成按钮 -->
-                <div class="vdo-model-add-card" onclick="showVdoModelCreate()">
-                  <div class="vdo-model-add-ic">+</div>
-                  <div class="vdo-model-add-txt">生成模特</div>
+                <!-- 生成/上传按钮组 -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                  <div class="vdo-model-add-card" onclick="showVdoModelCreate()">
+                    <div class="vdo-model-add-ic">+</div>
+                    <div class="vdo-model-add-txt">生成模特</div>
+                  </div>
+                  <div class="vdo-model-add-card" onclick="uploadUserModel()" style="border-style:solid; background:#fff;">
+                    <div class="vdo-model-add-ic" style="font-size:16px;">👤</div>
+                    <div class="vdo-model-add-txt">上传模特图</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -8889,6 +8913,44 @@ function hideVdoModelCreate() {
   document.getElementById('vdoModelCreateForm').style.display = 'none';
 }
 
+function uploadUserModel() {
+  // 模拟文件选择
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = event => {
+        const url = event.target.result;
+        const grid = document.getElementById('vdoModelMineGrid');
+        
+        // 创建新模特卡片
+        const card = document.createElement('div');
+        card.className = 'vdo-model-card active';
+        card.onclick = function() { selectVdoModel(this); };
+        card.innerHTML = `
+          <div class="vdo-model-avatar" style="background-image:url('${url}')"></div>
+          <div class="vdo-model-info">
+            <div class="vdo-model-name">上传模特 · ${file.name.substring(0,6)}...</div>
+            <div class="vdo-model-tag">自定义素材</div>
+          </div>
+        `;
+        
+        // 取消其他激活状态
+        document.querySelectorAll('.vdo-model-card').forEach(c => c.classList.remove('active'));
+        
+        // 插入到按钮组之前
+        grid.insertBefore(card, grid.querySelector('div[style*="grid-template-columns"]'));
+        alert('模特图片上传成功！已自动设为当前使用。');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  input.click();
+}
+
 function selectVdoModel(el) {
   document.querySelectorAll('.vdo-model-card').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
@@ -8938,8 +9000,29 @@ function vdoAiSellingPoints(){
 }
 
 function vdoAiScript(){
+  const req = document.getElementById('vdoScriptReq').value;
   const ta = document.getElementById('vdoCustomScript');
-  ta.value = "【开场】模特自然走入镜头，展示产品轻巧外观\n【产品展示】近景拍摄产品材质，强调极致触感\n【痛点解决】展示产品在不同场景下的使用便利性\n【CTA】限时优惠，点击下方链接购买";
+  
+  const btn = event.currentTarget;
+  const oldTxt = btn.textContent;
+  btn.textContent = '✨ AI 正在构思脚本...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    let script = "";
+    if(!req) {
+      script = "【开场】模特自然走入镜头，展示产品轻巧外观\n【产品展示】近景拍摄产品材质，强调极致触感\n【痛点解决】展示产品在不同场景下的使用便利性\n【CTA】限时优惠，点击下方链接购买";
+    } else {
+      script = `【根据您的需求生成：${req}】\n\n【镜头1：开场】视觉中心聚焦产品，配合轻快音效，快速切入主题\n【镜头2：卖点演示】针对“${req}”进行多角度特写，辅以动感转场\n【镜头3：应用场景】展示产品在核心环境下的实际表现，增强代入感\n【镜头4：收尾】品牌 Logo 浮现，呼吁用户点击了解详情`;
+    }
+    ta.value = script;
+    btn.textContent = oldTxt;
+    btn.disabled = false;
+  }, 1000);
+}
+
+function fillScriptReq(val) {
+  document.getElementById('vdoScriptReq').value = val;
 }
 
 function startVdoGen(){
