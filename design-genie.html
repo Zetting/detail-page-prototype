@@ -3004,21 +3004,51 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
   border-color: var(--primary);
 }
 .vdo-model-mine-grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 .vdo-model-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
+  gap: 8px;
+  padding: 8px;
   background: #fff;
   border: 1px solid var(--border-light);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
-  height: 60px;
+  height: 56px;
+  position: relative;
+}
+.vdo-model-hover-preview {
+  display: none;
+  position: absolute;
+  left: 105%;
+  top: -20px;
+  width: 140px;
+  height: 240px;
+  background-color: #f0f0f5;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+  border: 2px solid #fff;
+  z-index: 2000;
+  pointer-events: none;
+  animation: vdoPreviewFade .2s ease-out;
+}
+.vdo-model-card:hover .vdo-model-hover-preview {
+  display: block;
+}
+/* 第二列的模特预览图向左显示，防止超出边界 */
+.vdo-model-card:nth-child(even) .vdo-model-hover-preview {
+  left: auto;
+  right: 105%;
+}
+@keyframes vdoPreviewFade {
+  from { opacity:0; transform: translateY(5px) scale(0.95); }
+  to { opacity:1; transform: translateY(0) scale(1); }
 }
 .vdo-model-card:hover {
   border-color: var(--primary);
@@ -3375,6 +3405,7 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
                     <div class="vdo-model-name">欧美 · 纤细女</div>
                     <div class="vdo-model-tag">24岁 · 质感</div>
                   </div>
+                  <div class="vdo-model-hover-preview" style="background-image:url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400&h=700')"></div>
                 </div>
                 <div class="vdo-model-card" onclick="selectVdoModel(this)">
                   <div class="vdo-model-avatar" style="background-image:url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=100&h=100')"></div>
@@ -3382,9 +3413,10 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
                     <div class="vdo-model-name">东亚 · 阳光男</div>
                     <div class="vdo-model-tag">28岁 · 健壮</div>
                   </div>
+                  <div class="vdo-model-hover-preview" style="background-image:url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400&h=700')"></div>
                 </div>
                 <!-- 生成/上传按钮组 -->
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div style="grid-column: span 2; display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
                   <div class="vdo-model-add-card" onclick="showVdoModelCreate()">
                     <div class="vdo-model-add-ic">+</div>
                     <div class="vdo-model-add-txt">生成模特</div>
@@ -8936,6 +8968,7 @@ function uploadUserModel() {
             <div class="vdo-model-name">上传模特 · ${file.name.substring(0,6)}...</div>
             <div class="vdo-model-tag">自定义素材</div>
           </div>
+          <div class="vdo-model-hover-preview" style="background-image:url('${url}')"></div>
         `;
         
         // 取消其他激活状态
