@@ -2997,6 +2997,87 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
 .vdo-model-ta:focus {
   border-color: var(--primary);
 }
+.vdo-model-mine-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.vdo-model-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 60px;
+}
+.vdo-model-card:hover {
+  border-color: var(--primary);
+  background: rgba(99,102,241,0.02);
+}
+.vdo-model-card.active {
+  border-color: var(--primary);
+  background: rgba(99,102,241,0.05);
+  box-shadow: 0 4px 12px rgba(99,102,241,0.08);
+}
+.vdo-model-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+.vdo-model-info {
+  flex: 1;
+  min-width: 0;
+}
+.vdo-model-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vdo-model-tag {
+  font-size: 9px;
+  color: var(--text-muted);
+}
+.vdo-model-add-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  background: var(--bg-main);
+  border: 1px dashed var(--border-light);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-sub);
+  margin-top: 4px;
+}
+.vdo-model-add-card:hover {
+  background: #fff;
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.vdo-model-add-ic {
+  font-size: 18px;
+  font-weight: 300;
+}
+.vdo-model-add-txt {
+  font-size: 11px;
+  font-weight: 700;
+}
+
 /* AI Model Panel */
 .vdo-model-mode-btn {
 
@@ -3262,11 +3343,42 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
           <div class="sec-hd"><h3>AI 模特</h3></div>
           <div style="display:flex; background:var(--bg-main); padding:3px; border-radius:10px; margin-bottom:12px; border:1px solid var(--border-light);">
             <div class="vdo-model-mode-btn active" id="vdoModelModeNone" onclick="setVdoModelMode('none', this)">智能模特</div>
-            <div class="vdo-model-mode-btn" id="vdoModelModeCustom" onclick="setVdoModelMode('custom', this)">自定义模特</div>
+            <div class="vdo-model-mode-btn" id="vdoModelModeMine" onclick="setVdoModelMode('mine', this)">我的模特</div>
           </div>
           
           <div id="vdoModelPanel" class="vdo-model-panel" style="display:none;">
-            <div id="vdoModelCustomFields">
+            <!-- 我的模特列表 -->
+            <div id="vdoModelMineWrap">
+              <div class="vdo-model-mine-grid" id="vdoModelMineGrid">
+                <!-- 预设几个模特卡片 -->
+                <div class="vdo-model-card active" onclick="selectVdoModel(this)">
+                  <div class="vdo-model-avatar" style="background-image:url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100&h=100')"></div>
+                  <div class="vdo-model-info">
+                    <div class="vdo-model-name">欧美 · 纤细女</div>
+                    <div class="vdo-model-tag">24岁 · 质感</div>
+                  </div>
+                </div>
+                <div class="vdo-model-card" onclick="selectVdoModel(this)">
+                  <div class="vdo-model-avatar" style="background-image:url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=100&h=100')"></div>
+                  <div class="vdo-model-info">
+                    <div class="vdo-model-name">东亚 · 阳光男</div>
+                    <div class="vdo-model-tag">28岁 · 健壮</div>
+                  </div>
+                </div>
+                <!-- 生成按钮 -->
+                <div class="vdo-model-add-card" onclick="showVdoModelCreate()">
+                  <div class="vdo-model-add-ic">+</div>
+                  <div class="vdo-model-add-txt">生成模特</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 生成模特表单 (附件样式) -->
+            <div id="vdoModelCreateForm" style="display:none; margin-top:12px; padding:16px; background:var(--bg-main); border-radius:12px; border:1px solid var(--border-light);">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+                <h4 style="font-size:13px; font-weight:700;">生成新模特</h4>
+                <span style="font-size:12px; color:var(--primary); cursor:pointer;" onclick="hideVdoModelCreate()">返回选择</span>
+              </div>
               <div class="vdo-model-row">
                 <div class="vdo-model-field">
                   <span class="vdo-model-label">性别</span>
@@ -3276,6 +3388,12 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
                   </select>
                 </div>
                 <div class="vdo-model-field">
+                  <span class="vdo-model-label">年龄</span>
+                  <input type="number" class="vdo-model-select" value="25" placeholder="输入年龄">
+                </div>
+              </div>
+              <div class="vdo-model-row">
+                <div class="vdo-model-field">
                   <span class="vdo-model-label">年龄段</span>
                   <select class="vdo-model-select">
                     <option>青少年</option>
@@ -3284,8 +3402,6 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
                     <option>老年</option>
                   </select>
                 </div>
-              </div>
-              <div class="vdo-model-row">
                 <div class="vdo-model-field">
                   <span class="vdo-model-label">外观特征</span>
                   <select class="vdo-model-select">
@@ -3295,6 +3411,8 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
                     <option>非洲裔</option>
                   </select>
                 </div>
+              </div>
+              <div class="vdo-model-row">
                 <div class="vdo-model-field">
                   <span class="vdo-model-label">体型</span>
                   <select class="vdo-model-select">
@@ -3304,11 +3422,13 @@ body{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "
                     <option>丰满</option>
                   </select>
                 </div>
+                <div class="vdo-model-field" style="visibility:hidden"></div>
               </div>
               <div class="vdo-model-field">
                 <span class="vdo-model-label">外貌细节</span>
                 <textarea class="vdo-model-ta" placeholder="例如：小麦色皮肤、齐刘海、眼角有泪痣..."></textarea>
               </div>
+              <button class="btn-gen-sub" onclick="doCreateVdoModel()" style="width:100%; margin-top:16px; height:38px; border-radius:10px; background:var(--primary); color:#fff; border:none; font-size:12px; font-weight:700; cursor:pointer;">立即生成并使用</button>
             </div>
           </div>
         </div>
@@ -8630,7 +8750,36 @@ function setVdoModelMode(mode, el) {
   document.querySelectorAll('.vdo-model-mode-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   const panel = document.getElementById('vdoModelPanel');
-  panel.style.display = mode === 'custom' ? 'block' : 'none';
+  panel.style.display = mode === 'mine' ? 'block' : 'none';
+  if(mode === 'mine') hideVdoModelCreate();
+}
+
+function showVdoModelCreate() {
+  document.getElementById('vdoModelMineWrap').style.display = 'none';
+  document.getElementById('vdoModelCreateForm').style.display = 'block';
+}
+
+function hideVdoModelCreate() {
+  document.getElementById('vdoModelMineWrap').style.display = 'block';
+  document.getElementById('vdoModelCreateForm').style.display = 'none';
+}
+
+function selectVdoModel(el) {
+  document.querySelectorAll('.vdo-model-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function doCreateVdoModel() {
+  const btn = event.target;
+  const oldText = btn.textContent;
+  btn.textContent = '⏳ 正在生成...';
+  btn.disabled = true;
+  setTimeout(() => {
+    alert('模特生成成功！已为您挑选最契合的视觉形象。');
+    btn.textContent = oldText;
+    btn.disabled = false;
+    hideVdoModelCreate();
+  }, 1500);
 }
 
 function setVdoRatio(ratio, el){
@@ -8678,9 +8827,12 @@ function startVdoGen(){
   const count = 3; // 默认 3 条
   const types = _vdoTypes.filter(t => t.sel).map(t => t.title).join(', ') || '未选';
 
+  const mode = document.querySelector('.vdo-model-mode-btn.active').textContent;
+  const modelInfo = mode === '智能模特' ? '智能匹配' : '我的模特 (已选)';
+
   document.getElementById('taskTitle').textContent = '爆款视频生成';
   document.getElementById('taskParams').innerHTML = 
-    `比例: ${_vdoRatio} · 类型: ${types} · 时长: ${_vdoDuration}s<br>模型: ${m} · 语言: ${l} · AI 模特: 智能匹配`;
+    `比例: ${_vdoRatio} · 类型: ${types} · 时长: ${_vdoDuration}s<br>模型: ${m} · 语言: ${l} · AI 模特: ${modelInfo}`;
 
   txt.textContent = '✦ 视频分析生成中...';
   btn.classList.add('disabled');
