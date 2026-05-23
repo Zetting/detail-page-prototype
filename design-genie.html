@@ -23,6 +23,127 @@
   --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
+
+  /* 珠宝画布样式 */
+  .j-workspace {
+    flex: 1;
+    position: relative;
+    background-color: #f7f8fa;
+    background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+    background-size: 20px 20px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .j-stage {
+    width: 540px;
+    height: 720px;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+    transform-origin: center center;
+    transition: transform 0.3s ease;
+  }
+  .j-model-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .j-overlay-item {
+    position: absolute;
+    cursor: move;
+    user-select: none;
+    border: 1px transparent dashed;
+  }
+  .j-overlay-item.active {
+    border-color: var(--primary);
+  }
+  .j-overlay-item img {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: block;
+  }
+  .j-resizer {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+    right: -6px;
+    bottom: -6px;
+    cursor: nwse-resize;
+    display: none;
+    z-index: 10;
+  }
+  .j-overlay-item.active .j-resizer {
+    display: block;
+  }
+  .j-tools-bar {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    padding: 6px;
+    border-radius: 10px;
+    display: none;
+    gap: 4px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+  .j-tool-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-sub);
+    transition: all 0.2s;
+  }
+  .j-tool-btn:hover {
+    background: #f0f1f5;
+    color: var(--primary);
+  }
+  .j-model-item {
+    aspect-ratio: 3/4;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    background: #f8f9fa;
+  }
+  .j-model-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .j-check-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--primary);
+    opacity: 0.1;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .j-check-overlay::after {
+    content: '✓';
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+  }
+
   --shadow-sm: 0 1px 2px rgba(99, 102, 241, 0.05);
   --shadow-md: 0 4px 12px rgba(99, 102, 241, 0.04);
   --shadow-lg: 0 8px 24px rgba(99, 102, 241, 0.06);
@@ -3476,7 +3597,7 @@ input:checked + .slider:before { transform: translateX(16px); }
     <div class="nav-link active" onclick="switchNav(this, 'home')">首页</div>
     <div class="nav-link" onclick="switchNav(this, 'draw')">AI生图</div>
     <div class="nav-link" onclick="switchNav(this, 'tools')">AI工具</div>
-    <div class="nav-link" onclick="switchNav(this, 'scene')">AI场景</div>
+    <div class="nav-link" onclick="switchNav(this, 'scenes')">AI场景</div>
     <div class="nav-link" onclick="switchNav(this, 'video')">AI视频</div>
   </div>
 
@@ -3534,6 +3655,25 @@ input:checked + .slider:before { transform: translateX(16px); }
       </div>
     </div>
 
+    <div id="sideScene" style="display:none">
+      <div class="sidebar-label">AI场景 <span style="margin-left:auto; opacity:0.5; font-size:10px;">︿</span></div>
+      
+      <!-- 二级菜单：珠宝首饰 -->
+      <div class="sidebar-sub-group">
+        <div class="sidebar-sub-hd" onclick="toggleSidebarSubGroup(this)">
+          珠宝首饰
+          <span class="sub-hd-arrow">︿</span>
+        </div>
+        
+        <div class="sidebar-sub-body">
+          <!-- 三级菜单：珠宝佩戴 -->
+          <div class="si active" onclick="switchScene('jewelryWear',this)">
+            <span class="si-ic">💍</span>珠宝佩戴
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="sideVideo" style="display:none">
       <div class="sidebar-label">AI视频 <span style="margin-left:auto; opacity:0.5; font-size:10px;">︿</span></div>
       <div class="si active" onclick="switchScene('vdoProd',this)">
@@ -3578,6 +3718,84 @@ input:checked + .slider:before { transform: translateX(16px); }
   </aside>
 
   <div class="main">
+
+    <!-- ═══ LEFT · 珠宝佩戴 ═══ -->
+    <div class="left" id="leftJewelryWear" style="display:none">
+      <div class="left-scroll">
+        <!-- 珠宝素材 -->
+        <div class="sec-block">
+          <div class="sec-hd">
+            <h3>珠宝原图</h3>
+            <div class="tip">?</div>
+          </div>
+          <div class="upload-wrap">
+            <div class="upload-zone" onclick="jewelryAddImg()">
+              <div class="uz-ic">💍</div>
+              <div class="uz-lbl">上传珠宝 PNG (免抠)</div>
+              <div class="uz-sub">支持透明背景图 · png / webp</div>
+              <div class="uz-entries" onclick="event.stopPropagation()">
+                <button class="uz-icon-btn" onclick="openQr('jewelry')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                    <rect x="14" y="14" width="3" height="3"/><rect x="19" y="14" width="2" height="2"/>
+                    <rect x="14" y="19" width="2" height="2"/><rect x="19" y="19" width="2" height="2"/>
+                  </svg>
+                  手机扫码
+                </button>
+                <div class="uz-div"></div>
+                <button class="uz-icon-btn" onclick="openLib('jewelry')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                  图片库
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 模特选择 -->
+        <div class="sec-block">
+          <div class="sec-hd">
+            <h3>模特库</h3>
+          </div>
+          <div class="jewelry-cat-tabs" style="display:flex; gap:12px; margin-bottom:16px; border-bottom:1px solid #f0f0f5; padding-bottom:8px;">
+            <div class="jewelry-cat-tab active" onclick="switchJewelryCat(this, 'ring')" style="cursor:pointer; font-weight:700; color:var(--primary);">戒指</div>
+            <div class="jewelry-cat-tab" onclick="switchJewelryCat(this, 'neck')" style="cursor:pointer; color:var(--text-sub);">项链</div>
+            <div class="jewelry-cat-tab" onclick="switchJewelryCat(this, 'ear')" style="cursor:pointer; color:var(--text-sub);">耳环</div>
+            <div class="jewelry-cat-tab" onclick="switchJewelryCat(this, 'wrist')" style="cursor:pointer; color:var(--text-sub);">手镯/表</div>
+            <div class="jewelry-cat-tab" onclick="switchJewelryCat(this, 'foot')" style="cursor:pointer; color:var(--text-sub);">脚链</div>
+          </div>
+          <!-- 模特网格 (3列) -->
+          <div id="jewelryModelGrid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+            <!-- 内容由 JS 动态生成 -->
+          </div>
+        </div>
+
+        <!-- 生成设置 -->
+        <div class="sec-block">
+          <div class="sec-hd"><h3>生成设置</h3></div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div>
+              <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">融合强度</div>
+              <input type="range" class="range-input" style="width:100%" value="80">
+            </div>
+            <div class="toggle-row" style="margin-top:0; padding-top:0; border:none;">
+              <div class="toggle-lbl">保持珠宝光泽</div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="startJewelryGen()" style="width:100%; height:48px; margin-top:12px;">立即生成</button>
+      </div>
+    </div>
 
     <!-- ═══ LEFT · 商品视频 ═══ -->
     <div class="left" id="leftVdoProd" style="display:none">
@@ -5600,7 +5818,26 @@ input:checked + .slider:before { transform: translateX(16px); }
         </div>
 
         <!-- 空态 -->
-        <div class="empty-state" id="emptyState">
+          <!-- 珠宝佩戴工作区 (画布模式) -->
+          <div id="jewelryWorkspace" class="j-workspace" style="display:none;" onclick="setActiveJOverlay(null)">
+            <div class="j-stage" id="jStage" onclick="event.stopPropagation()">
+              <!-- 模特背景 -->
+              <div id="jModelBg" class="j-model-bg" style="background-image:url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=1000&fit=crop')"></div>
+              <!-- 珠宝覆盖层容器 -->
+              <div id="jOverlayContainer" style="position:absolute; inset:0;"></div>
+            </div>
+
+            <!-- 翻转/删除工具栏 (仅在选中项时弹出) -->
+            <div class="j-tools-bar" onclick="event.stopPropagation()">
+              <button class="j-tool-btn" onclick="flipJewelry('h')" title="水平翻转">↔️</button>
+              <button class="j-tool-btn" onclick="flipJewelry('v')" title="垂直翻转">↕️</button>
+              <div style="width:1px; height:20px; background:#e4e4e7; margin:0 4px;"></div>
+              <button class="j-tool-btn" onclick="removeJewelry()" style="color:#ff4d4f;" title="删除">🗑️</button>
+            </div>
+          </div>
+
+          <div class="empty-state" id="emptyState">
+
           <div class="empty-title" id="emptyTitle">AI+ 详情页</div>
           <div class="empty-sub" id="emptySub">上传商品图，AI 即刻生成<br><strong>符合多电商平台规范</strong> 的专业详情页</div>
           <div class="flow">
@@ -9266,6 +9503,10 @@ function useLibSel(){
       if(_copyRefImages.length<30) _copyRefImages.push({dataUrl:'https://picsum.photos/400/400?random='+Math.random(), name:'lib_'+i+'.jpg', req:''});
     });
     _renderCopyRefGrid();
+  } else if(_uploadTarget==='jewelry'){
+    _libSel.forEach(i=>{
+      addJewelryToCanvas('https://picsum.photos/400/400?random='+Math.random());
+    });
   } else {
     _libSel.forEach(i=>{
       if(_imgs.length<3) _imgs.push(_ni++);
@@ -9572,6 +9813,7 @@ function switchScene(scene, el){
   var vdoRep   = document.getElementById('leftVdoReplicate');
   var imgEdit  = document.getElementById('leftImgEdit');
   var imgTrans = document.getElementById('leftImgTrans');
+  var jewelryWear = document.getElementById('leftJewelryWear');
   
   if(aplus) aplus.style.display    = scene==='aplus'    ? '' : 'none';
   if(aplusAdv) aplusAdv.style.display = scene==='aplusAdv' ? '' : 'none';
@@ -9580,6 +9822,7 @@ function switchScene(scene, el){
   if(vdoRep) vdoRep.style.display   = scene==='vdoReplicate' ? '' : 'none';
   if(imgEdit) imgEdit.style.display  = scene==='imgEdit' ? '' : 'none';
   if(imgTrans) imgTrans.style.display = scene==='imgTrans' ? '' : 'none';
+  if(jewelryWear) jewelryWear.style.display = scene==='jewelryWear' ? '' : 'none';
 
   // 针对图片编辑场景调整 Tab 标签
   const rtabResult = document.getElementById('rtabResult');
@@ -9588,10 +9831,19 @@ function switchScene(scene, el){
     if(scene === 'imgEdit') {
       rtabResult.textContent = '上传图片';
       rtabCases.textContent = '历史记录';
+    } else if(scene === 'jewelryWear') {
+      rtabResult.textContent = '生成结果';
+      rtabCases.textContent = '优秀案例';
     } else {
       rtabResult.textContent = '生成结果';
       rtabCases.textContent = '优秀案例';
     }
+  }
+
+  // 初始切换到对应工作区
+  if (scene === 'jewelryWear') {
+    if(rtabResult) switchRightTab(rtabResult, 'result');
+    renderJewelryModels('ring');
   }
 
   // 初始隐藏批量编辑区
@@ -9657,40 +9909,69 @@ function switchRightTab(el, key) {
   const empty = document.getElementById('emptyState');
   const batchWrap = document.getElementById('batchEditWrap');
   const stdArea = document.getElementById('standardRightArea');
-  
-  const isImgEdit = document.getElementById('leftImgEdit').style.display !== 'none';
+  const jewelryWorkspace = document.getElementById('jewelryWorkspace');
+
+  const leftJewelryWear = document.getElementById('leftJewelryWear');
+  const isJewelry = leftJewelryWear && leftJewelryWear.style.display !== 'none';
+  const leftImgEdit = document.getElementById('leftImgEdit');
+  const isImgEdit = leftImgEdit && leftImgEdit.style.display !== 'none';
 
   if(key === 'result') {
-    if(isImgEdit) {
+    if(isJewelry) {
+      const hasResults = document.getElementById('resultGrid') && document.getElementById('resultGrid').innerHTML.trim() !== '';
+      if(hasResults) {
+        if(res) res.style.display = 'block';
+        if(jewelryWorkspace) jewelryWorkspace.style.display = 'none';
+      } else {
+        if(res) res.style.display = 'none';
+        if(jewelryWorkspace) {
+          jewelryWorkspace.style.display = 'flex';
+          setTimeout(resizeJewelryCanvas, 0);
+        }
+      }
+      if(cas) cas.style.display = 'none';
+      if(empty) empty.style.display = 'none';
+    } else if(isImgEdit) {
       const hasImgs = document.querySelectorAll('.batch-card:not(.batch-add-card)').length > 0;
       if(hasImgs) {
-        batchWrap.style.display = 'block';
-        stdArea.style.display = 'none';
+        if(batchWrap) batchWrap.style.display = 'block';
+        if(stdArea) stdArea.style.display = 'none';
       } else {
-        batchWrap.style.display = 'none';
-        stdArea.style.display = 'flex';
+        if(batchWrap) batchWrap.style.display = 'none';
+        if(stdArea) stdArea.style.display = 'flex';
         if(res) res.style.display = 'block';
         if(cas) cas.style.display = 'none';
       }
     } else {
-      batchWrap.style.display = 'none';
-      stdArea.style.display = 'flex';
+      if(batchWrap) batchWrap.style.display = 'none';
+      if(stdArea) stdArea.style.display = 'flex';
       if(res) res.style.display = 'block';
       if(cas) cas.style.display = 'none';
+      if(empty) empty.style.display = 'none';
     }
   } else {
-    batchWrap.style.display = 'none';
-    stdArea.style.display = 'flex';
+    // 优秀案例
+    if(jewelryWorkspace) jewelryWorkspace.style.display = 'none';
+    if(batchWrap) batchWrap.style.display = 'none';
+    if(stdArea) stdArea.style.display = 'flex';
     if(res) res.style.display = 'none';
     if(empty) empty.style.display = 'none';
     if(cas) cas.style.display = 'block';
     
     // 优秀案例内容填充
-    const isVideo = document.getElementById('sideVideo').style.display === 'block';
+    const isVideo = document.getElementById('sideVideo') && document.getElementById('sideVideo').style.display === 'block';
     const casesGrid = document.getElementById('casesGrid');
     if (casesGrid) {
-      if (isVideo) {
-        document.getElementById('caseCount').textContent = '6 个短视频案例';
+      if(isJewelry) {
+        casesGrid.innerHTML = `
+          <div class="case-card" style="aspect-ratio:3/4; background:url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&h=800&fit=crop') center/cover; border-radius:12px; position:relative;">
+            <div style="position:absolute; bottom:12px; left:12px; color:#fff; font-size:12px; text-shadow:0 2px 4px rgba(0,0,0,0.5);">高端珠宝佩戴展示</div>
+          </div>
+          <div class="case-card" style="aspect-ratio:3/4; background:url('https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&h=800&fit=crop') center/cover; border-radius:12px; position:relative;">
+            <div style="position:absolute; bottom:12px; left:12px; color:#fff; font-size:12px; text-shadow:0 2px 4px rgba(0,0,0,0.5);">珍珠耳环佩戴展示</div>
+          </div>
+        `;
+      } else if (isVideo) {
         casesGrid.innerHTML = `
           <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 爆款 UGC 案例</div>
           <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 剧情反转案例</div>
@@ -9698,7 +9979,6 @@ function switchRightTab(el, key) {
           <div style="background:#000; border-radius:12px; height:240px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; flex-direction:column; gap:8px; border:1px solid #333;">🎬 暴力测试案例</div>
         `;
       } else {
-        document.getElementById('caseCount').textContent = '8 个详情页案例';
         casesGrid.innerHTML = `
           <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">亚马逊 A+ 案例</div>
           <div style="background:#f5f6ff; border-radius:12px; height:180px; display:flex; align-items:center; justify-content:center; color:#6366F1; font-weight:600; border:1px dashed #d0d4ff;">淘宝详情案例</div>
@@ -10318,6 +10598,223 @@ function toggleSidebarSubGroup(el) {
   group.classList.toggle('collapsed');
 }
 
+function resizeJewelryCanvas() {
+  const workspace = document.getElementById('jewelryWorkspace');
+  const stage = document.getElementById('jStage');
+  if(!workspace || !stage || workspace.style.display === 'none') return;
+  
+  const w = workspace.offsetWidth - 80;
+  const h = workspace.offsetHeight - 80;
+  const scale = Math.min(w / 540, h / 720, 1);
+  stage.style.transform = `scale(${scale})`;
+}
+window.addEventListener('resize', resizeJewelryCanvas);
+
+let activeJOverlay = null;
+
+function setActiveJOverlay(el) {
+  if(activeJOverlay) activeJOverlay.classList.remove('active');
+  activeJOverlay = el;
+  const tools = document.querySelector('.j-tools-bar');
+  if(activeJOverlay) {
+    activeJOverlay.classList.add('active');
+    if(tools) tools.style.display = 'flex';
+  } else {
+    if(tools) tools.style.display = 'none';
+  }
+}
+
+function addJewelryToCanvas(url) {
+  const item = document.createElement('div');
+  item.className = 'j-overlay-item';
+  item.style.width = '100px';
+  item.style.height = '100px';
+  item.style.left = '50px';
+  item.style.top = '50px';
+  item.innerHTML = `
+    <img src="${url}">
+    <div class="j-resizer"></div>
+  `;
+  
+  item.onmousedown = function(e) {
+    if(e.target.className === 'j-resizer') return;
+    setActiveJOverlay(item);
+    let startX = e.clientX;
+    let startY = e.clientY;
+    let startLeft = item.offsetLeft;
+    let startTop = item.offsetTop;
+    
+    function move(ee) {
+      item.style.left = (startLeft + (ee.clientX - startX)) + 'px';
+      item.style.top = (startTop + (ee.clientY - startY)) + 'px';
+    }
+    function stop() {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', stop);
+    }
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', stop);
+  };
+  
+  const resizer = item.querySelector('.j-resizer');
+  resizer.onmousedown = function(e) {
+    e.stopPropagation();
+    let startX = e.clientX;
+    let startW = item.offsetWidth;
+    let startH = item.offsetHeight;
+    const ratio = startW / startH;
+    
+    function move(ee) {
+      let newW = startW + (ee.clientX - startX);
+      if(newW > 20) {
+        item.style.width = newW + 'px';
+        item.style.height = (newW / ratio) + 'px';
+      }
+    }
+    function stop() {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', stop);
+    }
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', stop);
+  };
+  
+  document.getElementById('jOverlayContainer').appendChild(item);
+  setActiveJOverlay(item);
+}
+
+function jewelryAddImg() {
+  var inp=document.createElement('input');
+  inp.type='file'; inp.accept='image/*';
+  inp.onchange=function(){
+    const file = inp.files[0];
+    if(!file) return;
+    const url = URL.createObjectURL(file);
+    addJewelryToCanvas(url);
+  };
+  inp.click();
+}
+
+function flipJewelry(dir) {
+  if(!activeJOverlay) return;
+  const img = activeJOverlay.querySelector('img');
+  let scaleX = img.style.transform.includes('scaleX(-1)') ? 1 : -1;
+  let scaleY = img.style.transform.includes('scaleY(-1)') ? 1 : -1;
+  if(dir === 'h') img.style.transform = `scaleX(${scaleX})`;
+  if(dir === 'v') img.style.transform = `scaleY(${scaleY})`;
+}
+
+function removeJewelry() {
+  if(!activeJOverlay) return;
+  activeJOverlay.remove();
+  setActiveJOverlay(null);
+}
+
+const JEWELRY_DATA = {
+  ring: [
+    'https://sc01.alicdn.com/kf/A31cb120e0749445d8185cf16abdf16d5f.png',
+    'https://sc01.alicdn.com/kf/A23de92a4dce7473ab9ca70c955cd7b34s.png',
+    'https://sc01.alicdn.com/kf/A5a137d6359ac4757963406c0da65c9cbq.png'
+  ],
+  neck: [
+    'https://sc01.alicdn.com/kf/A782fda6103d441fea26aca3880c0abe4b.png',
+    'https://sc01.alicdn.com/kf/Aa5cbb14087a64bb8a13268d6e86741bbQ.png',
+    'https://sc01.alicdn.com/kf/A13a52a95127c4fedb72e6f7c6aae6653Z.png'
+  ],
+  ear: [
+    'https://sc01.alicdn.com/kf/A696dc8b68a204c669013969e04f97513m.png'
+  ],
+  wrist: [
+    'https://sc01.alicdn.com/kf/A23de92a4dce7473ab9ca70c955cd7b34s.png',
+    'https://sc01.alicdn.com/kf/A5a137d6359ac4757963406c0da65c9cbq.png'
+  ],
+  foot: [
+    'https://sc01.alicdn.com/kf/A5d0c1208456a4885918fc16d557671fbf.png'
+  ]
+};
+
+let jewelrySelectedCat = 'ring';
+
+function switchJewelryCat(el, cat) {
+  document.querySelectorAll('.jewelry-cat-tab').forEach(t => {
+    t.classList.remove('active');
+    t.style.fontWeight = '400';
+    t.style.color = 'var(--text-sub)';
+  });
+  el.classList.add('active');
+  el.style.fontWeight = '700';
+  el.style.color = 'var(--primary)';
+  renderJewelryModels(cat);
+}
+
+function renderJewelryModels(cat) {
+  jewelrySelectedCat = cat;
+  const grid = document.getElementById('jewelryModelGrid');
+  if (!grid) return;
+  grid.innerHTML = (JEWELRY_DATA[cat] || []).map(url => `
+    <div class="j-model-item" onclick="selectJewelryModel(this, '${url}')">
+      <div style="background:url('${url}') center/cover; width:100%; height:100%;"></div>
+      <div class="j-check-overlay"></div>
+    </div>
+  `).join('');
+  
+  const first = grid.querySelector('.j-model-item');
+  if(first) selectJewelryModel(first, JEWELRY_DATA[cat][0]);
+}
+
+function selectJewelryModel(el, url) {
+  document.querySelectorAll('.j-model-item').forEach(m => {
+    const check = m.querySelector('.j-check-overlay');
+    if (check) check.style.display = 'none';
+  });
+  const check = el.querySelector('.j-check-overlay');
+  if (check) check.style.display = 'flex';
+  
+  const bg = document.getElementById('jModelBg');
+  if(bg && url) {
+    bg.style.backgroundImage = `url('${url}')`;
+    autoZoomCat(jewelrySelectedCat);
+  }
+}
+
+function autoZoomCat(cat) {
+  const bg = document.getElementById('jModelBg');
+  if(!bg) return;
+  if(cat === 'ring') bg.style.transform = 'scale(1.8) translateY(20%)';
+  else if(cat === 'neck') bg.style.transform = 'scale(1.4) translateY(-10%)';
+  else if(cat === 'ear') bg.style.transform = 'scale(2.2) translateY(-15%) translateX(10%)';
+  else if(cat === 'wrist') bg.style.transform = 'scale(1.6) translateY(25%)';
+  else if(cat === 'foot') bg.style.transform = 'scale(1.8) translateY(30%)';
+  else bg.style.transform = 'scale(1)';
+}
+
+function startJewelryGen() {
+  const scroll = document.querySelector('#leftJewelryWear .left-scroll');
+  if (scroll) scroll.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  showToast('AI 正在融合佩戴效果...', '💍');
+  const bar = document.querySelector('.prog-bar');
+  if(bar) {
+    bar.style.width = '0%';
+    setTimeout(()=>bar.style.width='100%', 2000);
+  }
+  
+  setTimeout(() => {
+    const grid = document.getElementById('resultGrid');
+    if(grid) {
+      grid.innerHTML = `
+        <div class="case-card" style="aspect-ratio:3/4; background:url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&h=800&fit=crop') center/cover; border-radius:12px;"></div>
+        <div class="case-card" style="aspect-ratio:3/4; background:url('https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&h=800&fit=crop') center/cover; border-radius:12px;"></div>
+        <div class="case-card" style="aspect-ratio:3/4; background:url('https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=600&h=800&fit=crop') center/cover; border-radius:12px;"></div>
+        <div class="case-card" style="aspect-ratio:3/4; background:url('https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=600&h=800&fit=crop') center/cover; border-radius:12px;"></div>
+      `;
+    }
+    const rtabResult = document.getElementById('rtabResult');
+    if(rtabResult) switchRightTab(rtabResult, 'result');
+    showToast('生成成功', '✨');
+  }, 2500);
+}
+
 function switchNav(el, key) {
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   el.classList.add('active');
@@ -10327,6 +10824,7 @@ function switchNav(el, key) {
   const sideHome = document.getElementById('sideHome');
   const sideVideo = document.getElementById('sideVideo');
   const sideTools = document.getElementById('sideTools');
+  const sideScene = document.getElementById('sideScene');
   
   if (key === 'home') {
     dashboard.style.display = 'flex';
@@ -10334,6 +10832,7 @@ function switchNav(el, key) {
     if(sideHome) sideHome.style.display = 'block';
     if(sideVideo) sideVideo.style.display = 'none';
     if(sideTools) sideTools.style.display = 'none';
+    if(sideScene) sideScene.style.display = 'none';
     // 默认切换到第一个场景
     var firstSi = sideHome ? sideHome.querySelector('.si') : null;
     if(firstSi) switchScene('aplus', firstSi);
@@ -10343,6 +10842,7 @@ function switchNav(el, key) {
     if(sideHome) sideHome.style.display = 'none';
     if(sideVideo) sideVideo.style.display = 'block';
     if(sideTools) sideTools.style.display = 'none';
+    if(sideScene) sideScene.style.display = 'none';
     // 默认切换到商品视频
     var firstSi = sideVideo ? sideVideo.querySelector('.si') : null;
     if(firstSi) switchScene('vdoProd', firstSi);
@@ -10352,9 +10852,20 @@ function switchNav(el, key) {
     if(sideHome) sideHome.style.display = 'none';
     if(sideVideo) sideVideo.style.display = 'none';
     if(sideTools) sideTools.style.display = 'block';
+    if(sideScene) sideScene.style.display = 'none';
     // 默认切换到图片编辑
     var firstSi = sideTools ? sideTools.querySelector('.si') : null;
     if(firstSi) switchScene('imgEdit', firstSi);
+  } else if (key === 'scenes') {
+    dashboard.style.display = 'flex';
+    other.style.display = 'none';
+    if(sideHome) sideHome.style.display = 'none';
+    if(sideVideo) sideVideo.style.display = 'none';
+    if(sideTools) sideTools.style.display = 'none';
+    if(sideScene) sideScene.style.display = 'block';
+    // 默认切换到珠宝佩戴
+    var firstSi = sideScene ? sideScene.querySelector('.si') : null;
+    if(firstSi) switchScene('jewelryWear', firstSi);
   } else {
     dashboard.style.display = 'none';
     other.style.display = 'flex';
