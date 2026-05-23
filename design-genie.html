@@ -47,6 +47,47 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  /* 首页概览 Dashboard */
+  .dash-card {
+    background: #fff;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .dash-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+    transform: translateY(-2px);
+  }
+  .dash-card-ic {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+  .dash-card-info {
+    flex: 1;
+  }
+  .dash-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 2px;
+  }
+  .dash-card-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.3;
+  }
+
   /* 珠宝画布样式 */
   .j-workspace {
     flex: 1;
@@ -3689,9 +3730,15 @@ input:checked + .slider:before { transform: translateX(16px); }
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div id="sideHome">
-      <div class="sidebar-label">首页 <span style="margin-left:auto; opacity:0.5; font-size:10px;">︿</span></div>
-      <div class="si active" onclick="switchScene('aplus',this)">
+      <div class="sidebar-label">工作台 <span style="margin-left:auto; opacity:0.5; font-size:10px;">︿</span></div>
+      <div class="si active" onclick="switchScene('home',this)">
+        <span class="si-ic">🏠</span>概览
+      </div>
+      <div class="si" onclick="switchScene('aplus',this)">
         <span class="si-ic">📄</span>详情页
+      </div>
+      <div class="si" onclick="switchScene('imgEdit',this)">
+        <span class="si-ic">✂️</span>图片编辑
       </div>
       <div class="si" onclick="switchScene('aplusAdv',this)">
         <span class="si-ic">🌟</span>电商套图
@@ -3699,9 +3746,6 @@ input:checked + .slider:before { transform: translateX(16px); }
       </div>
       <div class="si" onclick="switchScene('copy',this)">
         <span class="si-ic">✨</span>爆款复刻
-      </div>
-      <div class="si" onclick="switchScene('aplus',this)">
-        <span class="si-ic">⚡</span>服饰穿戴
       </div>
     </div>
 
@@ -3768,6 +3812,63 @@ input:checked + .slider:before { transform: translateX(16px); }
   </aside>
 
   <div class="main">
+
+    <!-- ═══ LEFT · 首页概览 (Dashboard) ═══ -->
+    <div class="left" id="leftHome">
+      <div class="left-scroll">
+        <div style="margin-bottom:24px;">
+          <h2 style="font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:4px;">欢迎使用 设计精灵.pro</h2>
+          <p style="font-size:12px; color:var(--text-muted);">开启您的 AI 电商创作之旅</p>
+        </div>
+        
+        <div class="sec-block">
+          <div class="sec-hd"><h3>常用功能</h3></div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="dash-card" onclick="switchScene('aplus', document.querySelector('.si[onclick*=\'aplus\']'))">
+              <div class="dash-card-ic" style="background:#EEF2FF; color:#6366F1;">📄</div>
+              <div class="dash-card-info">
+                <div class="dash-card-title">详情页生成</div>
+                <div class="dash-card-desc">上传产品图，AI 自动生成高转化详情页</div>
+              </div>
+            </div>
+            <div class="dash-card" onclick="switchScene('imgEdit', document.querySelector('.si[onclick*=\'imgEdit\']'))">
+              <div class="dash-card-ic" style="background:#FDF2F2; color:#EF4444;">✂️</div>
+              <div class="dash-card-info">
+                <div class="dash-card-title">图片编辑</div>
+                <div class="dash-card-desc">AI 精准执行背景替换、消除、重绘</div>
+              </div>
+            </div>
+            <div class="dash-card" onclick="switchScene('copy', document.querySelector('.si[onclick*=\'copy\']'))">
+              <div class="dash-card-ic" style="background:#FFF7ED; color:#F59E0B;">✨</div>
+              <div class="dash-card-info">
+                <div class="dash-card-title">爆款复刻</div>
+                <div class="dash-card-desc">1:1 还原爆款设计风格</div>
+              </div>
+            </div>
+            <div class="dash-card" onclick="switchScene('vdoProd', document.querySelector('.si[onclick*=\'vdoProd\']'))">
+              <div class="dash-card-ic" style="background:#F0FDF4; color:#22C55E;">📹</div>
+              <div class="dash-card-info">
+                <div class="dash-card-title">商品视频</div>
+                <div class="dash-card-desc">AI 自动规划脚本并生成短视频</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-block">
+          <div class="sec-hd"><h3>工作场景</h3></div>
+          <div style="display:grid; grid-template-columns: 1fr; gap:12px;">
+            <div class="dash-card" onclick="switchScene('jewelryWear', document.querySelector('.si[onclick*=\'jewelryWear\']'))">
+              <div class="dash-card-ic" style="background:#F5F3FF; color:#8B5CF6;">💍</div>
+              <div class="dash-card-info">
+                <div class="dash-card-title">珠宝佩戴</div>
+                <div class="dash-card-desc">针对珠宝首饰的 AI 模特佩戴方案，支持戒指、项链、耳环等</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- ═══ LEFT · 珠宝佩戴 ═══ -->
     <div class="left" id="leftJewelryWear" style="display:none">
@@ -6961,7 +7062,9 @@ document.addEventListener('DOMContentLoaded', function(){
   if(headerBtns) headerBtns.style.display = 'none';
   _genMode = '';
 
-
+  // 初始加载 Dashboard
+  const homeTab = document.querySelector('.nav-link[onclick*="\'home\'"]');
+  if(homeTab) switchNav(homeTab, 'home');
 });
 
 /* ══ 自定义选板块弹窗 ══ */
@@ -9958,6 +10061,7 @@ function switchScene(scene, el){
   var imgEdit  = document.getElementById('leftImgEdit');
   var imgTrans = document.getElementById('leftImgTrans');
   var jewelryWear = document.getElementById('leftJewelryWear');
+  var homeDashboard = document.getElementById('leftHome');
   
   if(aplus) aplus.style.display    = scene==='aplus'    ? '' : 'none';
   if(aplusAdv) aplusAdv.style.display = scene==='aplusAdv' ? '' : 'none';
@@ -9967,6 +10071,7 @@ function switchScene(scene, el){
   if(imgEdit) imgEdit.style.display  = scene==='imgEdit' ? '' : 'none';
   if(imgTrans) imgTrans.style.display = scene==='imgTrans' ? '' : 'none';
   if(jewelryWear) jewelryWear.style.display = scene==='jewelryWear' ? '' : 'none';
+  if(homeDashboard) homeDashboard.style.display = scene==='home' ? '' : 'none';
 
   // 针对图片编辑场景调整 Tab 标签
   const rtabResult = document.getElementById('rtabResult');
@@ -10032,6 +10137,13 @@ function switchScene(scene, el){
     if(emptyTitle) emptyTitle.textContent = 'AI 图片翻译';
     if(emptySub) emptySub.innerHTML = '自动识别图片中的文字并保留原风格翻译<br><strong>一键生成</strong> 多语言版本的商品图';
     if(emptyFlowLbl) emptyFlowLbl.textContent = '立即翻译';
+  } else if(scene === 'home') {
+    if(imgEditFeats) imgEditFeats.style.display = 'none';
+    if(emptyFlow) emptyFlow.style.display = 'flex';
+    if(platformRow) platformRow.style.display = 'flex';
+    if(emptyTitle) emptyTitle.textContent = '设计精灵.pro 工作台';
+    if(emptySub) emptySub.innerHTML = '从左侧选择功能开始创作，或通过常用入口快速进入。<br>您的 AI 设计助手已准备就绪。';
+    if(emptyFlowLbl) emptyFlowLbl.textContent = '开始探索';
   } else {
     if(imgEditFeats) imgEditFeats.style.display = 'none';
     if(emptyFlow) emptyFlow.style.display = 'flex';
@@ -11093,9 +11205,9 @@ function switchNav(el, key) {
     if(sideVideo) sideVideo.style.display = 'none';
     if(sideTools) sideTools.style.display = 'none';
     if(sideScene) sideScene.style.display = 'none';
-    // 默认切换到第一个场景
+    // 默认切换到第一个场景 (概览)
     var firstSi = sideHome ? sideHome.querySelector('.si') : null;
-    if(firstSi) switchScene('aplus', firstSi);
+    if(firstSi) switchScene('home', firstSi);
   } else if (key === 'video') {
     dashboard.style.display = 'flex';
     other.style.display = 'none';
