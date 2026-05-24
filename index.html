@@ -206,16 +206,12 @@
     color: var(--primary);
   }
   .j-model-item {
-    aspect-ratio: 3/4;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 2px solid transparent;
     cursor: pointer;
     position: relative;
     transition: all 0.2s;
     background: #f8f9fa;
-    flex-shrink: 0;
   }
+
   .j-model-item:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
@@ -224,19 +220,23 @@
   #jewelryMyModelGrid .j-model-item,
   #vdoModelGrid .j-model-item,
   #vdoMyModelGrid .j-model-item {
-    width: calc((100% - 16px) / 3);
-    scroll-snap-align: start;
+    width: 100%;
+    aspect-ratio: 1/1;
   }
   .vdo-tab-wrap { display:flex; background:#f1f5f9; padding:4px; border-radius:10px; }
   .vdo-tab { flex:1; text-align:center; padding:8px; font-size:12px; cursor:pointer; border-radius:8px; transition:all 0.2s; color:#64748b; font-weight:600; }
   .vdo-tab.active { background:#fff; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); }
   
-  #jewelryModelGrid::-webkit-scrollbar, 
-  #jewelryMyModelGrid::-webkit-scrollbar,
-  #vdoModelGrid::-webkit-scrollbar,
+  #vdoModelGrid::-webkit-scrollbar, 
   #vdoMyModelGrid::-webkit-scrollbar {
     height: 4px;
   }
+  #vdoModelGrid::-webkit-scrollbar-thumb,
+  #vdoMyModelGrid::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+  }
+
   #jewelryModelGrid::-webkit-scrollbar-thumb,
   #jewelryMyModelGrid::-webkit-scrollbar-thumb,
   #vdoModelGrid::-webkit-scrollbar-thumb,
@@ -3335,6 +3335,68 @@ input:checked + .slider:before { transform: translateX(16px); }
 .vdo-ratio-item.active{border-color:var(--primary);background:rgba(99,102,241,0.05);box-shadow:0 0 0 1px var(--primary);}
 .vdo-ratio-box{border:1.5px solid var(--muted);border-radius:3px;transition:all .2s;}
 .vdo-ratio-item.active .vdo-ratio-box{border-color:var(--primary);background:rgba(99,102,241,0.1);}
+
+.j-model-item.active {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.2);
+}
+
+/* 生成设置弹窗 */
+.cfg-modal-mask {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4); 
+  backdrop-filter: blur(8px); z-index: 2000; 
+  display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s;
+}
+.cfg-modal-mask.show { display: flex; opacity: 1; }
+.cfg-modal-box {
+  background: #fff; width: 480px; border-radius: 28px; padding: 24px; 
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15); transform: translateY(20px); transition: transform 0.3s;
+  max-height: 90vh; overflow-y: auto;
+}
+.cfg-modal-mask.show .cfg-modal-box { transform: translateY(0); }
+.cfg-modal-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.cfg-modal-hd h2 { font-size: 18px; font-weight: 800; color: #1e293b; margin: 0; }
+.cfg-modal-close { width: 32px; height: 32px; border-radius: 50%; border: none; background: #f1f5f9; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+.cfg-sec { margin-bottom: 24px; }
+.cfg-sec-title { font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 12px; }
+.cfg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.cfg-opt-item { 
+  background: #fff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 10px; 
+  display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s;
+  font-size: 12px; font-weight: 600; color: #475569;
+}
+.cfg-opt-item.active { border-color: var(--primary); color: var(--primary); background: rgba(99,102,241,0.02); }
+.cfg-opt-item.dashed { border-style: dashed; }
+
+.cfg-model-list { display: flex; flex-direction: column; gap: 10px; }
+.cfg-model-card {
+  display: flex; align-items: center; gap: 14px; padding: 14px; 
+  border: 1.5px solid #e2e8f0; border-radius: 16px; cursor: pointer; transition: all 0.2s;
+}
+.cfg-model-card.active { border-color: var(--primary); background: rgba(99,102,241,0.03); }
+.cfg-model-card .radio-dot { 
+  width: 18px; height: 18px; border: 2px solid #cbd5e1; border-radius: 50%; 
+  display: flex; align-items: center; justify-content: center; margin-left: auto;
+}
+.cfg-model-card.active .radio-dot { border-color: var(--primary); }
+.cfg-model-card.active .radio-dot::after { content:''; width: 10px; height: 10px; background: var(--primary); border-radius: 50%; }
+
+.cfg-foot { display: flex; gap: 12px; margin-top: 32px; }
+.cfg-btn-cancel { flex: 1; height: 48px; border-radius: 16px; border: 1.5px solid #e2e8f0; background: #fff; font-size: 14px; font-weight: 700; color: #64748b; cursor: pointer; }
+.cfg-btn-save { flex: 2; height: 48px; border-radius: 16px; border: none; background: var(--primary); font-size: 14px; font-weight: 800; color: #fff; cursor: pointer; box-shadow: 0 8px 20px rgba(99,102,241,0.3); }
+
+.j-model-opt.active {
+  border-color: var(--primary) !important;
+  background: rgba(99,102,241,0.05) !important;
+  box-shadow: 0 0 0 1px var(--primary);
+}
+.j-model-opt.active div[style*="background:var(--primary)"],
+.j-model-opt.active div[style*="background:#10b981"],
+.j-model-opt.active div[style*="background:#6366f1"] {
+  box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+}
 .vdo-ratio-label{font-size:10px;font-weight:600;color:var(--text-sub);white-space:nowrap;}
 .vdo-ratio-item.active .vdo-ratio-label{color:var(--primary);}
 
@@ -3942,8 +4004,8 @@ input:checked + .slider:before { transform: translateX(16px); }
               <div class="tag-mini" onclick="filterJewelryModels(this, 'female')">女</div>
             </div>
 
-            <!-- 模特网格 (一行展示3列，支持水平拖动/滚动) -->
-            <div id="jewelryModelGrid" style="display:flex; overflow-x:auto; gap:8px; padding-bottom:8px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
+            <!-- 模特网格 (3x3 布局) -->
+            <div id="jewelryModelGrid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; padding-bottom:8px;">
               <!-- 内容由 JS 动态生成 -->
             </div>
           </div>
@@ -3996,19 +4058,19 @@ input:checked + .slider:before { transform: translateX(16px); }
               <button class="btn-primary" onclick="genJewelryModel()" style="width:100%; height:36px; font-size:12px; border-radius:10px;">立即生成</button>
             </div>
             
-            <div id="jewelryMyModelGrid" style="display:flex; overflow-x:auto; gap:8px; padding-bottom:8px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
-              <div class="j-model-item" style="border:1px dashed #d1d5db; display:flex; align-items:center; justify-content:center; color:#9ca3af; font-size:20px;" onclick="window.ModuleManager.dispatch('addMyModel')">+</div>
+            <div id="jewelryMyModelGrid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; padding-bottom:8px;">
+              <div class="j-model-item" style="border:1px dashed #d1d5db; display:flex; align-items:center; justify-content:center; color:#9ca3af; font-size:20px; width:100%;" onclick="window.ModuleManager.dispatch('addMyModel')">+</div>
             </div>
           </div>
         </div>
 
-        <!-- 穿戴位置 (新增) -->
+        <!-- 穿戴位置 -->
         <div class="sec-block">
-          <div class="sec-hd">
-            <h3>穿戴位置</h3>
-            <div style="display:flex; background:var(--bg-main); padding:3px; border-radius:10px; border:1px solid var(--border-light);">
-              <div class="vdo-model-mode-btn active" id="jewelryPosAuto" onclick="window.ModuleManager.dispatch('setPosMode', 'auto', this)">自动吸附</div>
-              <div class="vdo-model-mode-btn" id="jewelryPosManual" onclick="window.ModuleManager.dispatch('setPosMode', 'manual', this)">手动微调</div>
+          <div class="sec-hd" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+            <h3 style="margin-bottom:0;">穿戴位置</h3>
+            <div style="display:flex; background:#f1f5f9; padding:2px; border-radius:8px; border:1px solid #e2e8f0; width:100px;">
+              <div class="vdo-model-mode-btn active" id="jewelryPosAuto" onclick="window.ModuleManager.dispatch('setPosMode', 'auto', this)" style="flex:1; text-align:center; height:24px; line-height:24px; font-size:10px; border-radius:6px; cursor:pointer; white-space:nowrap;">自动</div>
+              <div class="vdo-model-mode-btn" id="jewelryPosManual" onclick="window.ModuleManager.dispatch('setPosMode', 'manual', this)" style="flex:1; text-align:center; height:24px; line-height:24px; font-size:10px; border-radius:6px; cursor:pointer; white-space:nowrap;">手动</div>
             </div>
           </div>
           <div id="manualPosTips" style="display:none; font-size:11px; color:var(--text-muted); background:#f8fafc; padding:12px; border-radius:12px; border:1px solid #e2e8f0; line-height:1.6;">
@@ -4031,21 +4093,76 @@ input:checked + .slider:before { transform: translateX(16px); }
         <!-- 生成设置 -->
         <div class="sec-block">
           <div class="sec-hd"><h3>生成设置</h3></div>
-          <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:20px;">
+            <!-- 画布比例 -->
             <div>
-              <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">选择模型</div>
-              <div class="segment-control" style="background:var(--bg-main); padding:3px; border-radius:10px; display:flex; border:1px solid var(--border-light);">
-                <div class="segment-item active" onclick="window.ModuleManager.dispatch('setJModel', 'gpt-image2', this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">GPT-J Pro</div>
-                <div class="segment-item" onclick="window.ModuleManager.dispatch('setJModel', 'nanobanano-pro', this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">Nano Pro</div>
-                <div class="segment-item" onclick="window.ModuleManager.dispatch('setJModel', 'flux-v1', this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">Flux Real</div>
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                <span style="width:3px; height:10px; background:var(--primary); border-radius:2px;"></span>
+                画布比例
+              </div>
+              <div class="vdo-ratio-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                <div class="vdo-ratio-item active" onclick="window.ModuleManager.dispatch('setJSize', '1:1', this)" style="padding:8px 4px; height:auto;">
+                  <div class="vdo-ratio-box" style="width:12px;height:12px; border: 1.5px solid currentColor; border-radius: 2px;"></div>
+                  <span class="vdo-ratio-label" style="font-size:10px;">1:1</span>
+                </div>
+                <div class="vdo-ratio-item" onclick="window.ModuleManager.dispatch('setJSize', '3:4', this)" style="padding:8px 4px; height:auto;">
+                  <div class="vdo-ratio-box" style="width:10px;height:14px; border: 1.5px solid currentColor; border-radius: 2px;"></div>
+                  <span class="vdo-ratio-label" style="font-size:10px;">3:4</span>
+                </div>
+                <div class="vdo-ratio-item" onclick="window.ModuleManager.dispatch('setJSize', '9:16', this)" style="padding:8px 4px; height:auto;">
+                  <div class="vdo-ratio-box" style="width:8px;height:14px; border: 1.5px solid currentColor; border-radius: 2px;"></div>
+                  <span class="vdo-ratio-label" style="font-size:10px;">9:16</span>
+                </div>
               </div>
             </div>
+
+            <!-- 选择模型 -->
             <div>
-              <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">生成分辨率</div>
-              <div class="segment-control" style="background:var(--bg-main); padding:3px; border-radius:10px; display:flex; border:1px solid var(--border-light);">
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                <span style="width:3px; height:10px; background:var(--primary); border-radius:2px;"></span>
+                选择模型
+              </div>
+              <div class="j-model-select-list" style="display:grid; grid-template-columns: 1fr; gap:8px;">
+                <div class="j-model-opt active" onclick="window.ModuleManager.dispatch('setJModel', 'gpt-image2', this)" style="display:flex; align-items:center; gap:12px; padding:10px; background:#fff; border:1px solid #e2e8f0; border-radius:12px; cursor:pointer; transition: all 0.2s;">
+                  <div style="width:32px; height:32px; background:var(--primary); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px;">✦</div>
+                  <div style="flex:1;">
+                    <div style="font-size:12px; font-weight:700; color:#1e293b;">GPT-J Pro</div>
+                    <div style="font-size:10px; color:#64748b;">质感卓越，细节高保真</div>
+                  </div>
+                </div>
+                <div class="j-model-opt" onclick="window.ModuleManager.dispatch('setJModel', 'nanobanano-pro', this)" style="display:flex; align-items:center; gap:12px; padding:10px; background:#fff; border:1px solid #e2e8f0; border-radius:12px; cursor:pointer; transition: all 0.2s;">
+                  <div style="width:32px; height:32px; background:#10b981; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px;">⚡</div>
+                  <div style="flex:1;">
+                    <div style="font-size:12px; font-weight:700; color:#1e293b;">Nano Pro</div>
+                    <div style="font-size:10px; color:#64748b;">生成极速，写实级增强</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 生成张数 -->
+            <div>
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                <span style="width:3px; height:10px; background:var(--primary); border-radius:2px;"></span>
+                生成张数
+              </div>
+              <div class="segment-control" style="background:#f1f5f9; padding:4px; border-radius:12px; display:flex; border:1px solid #e2e8f0;">
+                <div class="segment-item active" onclick="window.ModuleManager.dispatch('setJBatch', 1, this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">1张</div>
+                <div class="segment-item" onclick="window.ModuleManager.dispatch('setJBatch', 3, this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">3张</div>
+                <div class="segment-item" onclick="window.ModuleManager.dispatch('setJBatch', 5, this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">5张</div>
+              </div>
+              <div style="font-size:10px; color:#94a3b8; margin-top:8px;">💡 多张模式将自动生成不同角度/场景背景</div>
+            </div>
+
+            <!-- 生成画质 -->
+            <div>
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                <span style="width:3px; height:10px; background:var(--primary); border-radius:2px;"></span>
+                生成画质
+              </div>
+              <div class="segment-control" style="background:#f1f5f9; padding:4px; border-radius:12px; display:flex; border:1px solid #e2e8f0;">
                 <div class="segment-item active" onclick="window.ModuleManager.dispatch('setJRes', '1K', this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">1K (HD)</div>
                 <div class="segment-item" onclick="window.ModuleManager.dispatch('setJRes', '2K', this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">2K (QHD)</div>
-                <div class="segment-item" onclick="window.ModuleManager.dispatch('setJRes', '4K', this)" style="flex:1; text-align:center; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;">4K (UHD)</div>
               </div>
             </div>
           </div>
@@ -11821,7 +11938,8 @@ function handleAdvKeyDown(e) {
   </div>
 </div>
 
-<!-- ═══ 珠宝手动微调弹窗 ═══ -->
+  <!-- ═══ 珠宝手动微调弹窗 ═══ -->
+
 <div class="jewelry-manual-mask" id="jewelryManualMask" onclick="window.ModuleManager.dispatch('closeManual', event)">
   <div class="jewelry-manual-modal">
     <div class="jewelry-manual-hd">

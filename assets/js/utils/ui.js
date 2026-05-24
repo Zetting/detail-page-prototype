@@ -91,6 +91,40 @@
       if (typeof window.switchMainTab === 'function') {
         window.switchMainTab(el, index);
       }
+    },
+
+    /**
+     * 预览大图
+     */
+    previewImage(url) {
+      if (!url) return;
+      let overlay = document.getElementById('geniePreviewOverlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'geniePreviewOverlay';
+        overlay.style = `
+          position: fixed; inset: 0; background: rgba(0,0,0,0.85); 
+          z-index: 10000; display: flex; align-items: center; justify-content: center; 
+          backdrop-filter: blur(10px); cursor: zoom-out; opacity: 0; transition: opacity 0.3s;
+        `;
+        overlay.innerHTML = `
+          <img id="geniePreviewImg" style="max-width: 90%; max-height: 90%; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
+          <div style="position: absolute; top: 20px; right: 20px; color: #fff; font-size: 24px; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 50%;">×</div>
+        `;
+        overlay.onclick = () => {
+          overlay.style.opacity = '0';
+          overlay.querySelector('img').style.transform = 'scale(0.9)';
+          setTimeout(() => overlay.style.display = 'none', 300);
+        };
+        document.body.appendChild(overlay);
+      }
+      const img = overlay.querySelector('img');
+      img.src = url;
+      overlay.style.display = 'flex';
+      setTimeout(() => {
+        overlay.style.opacity = '1';
+        img.style.transform = 'scale(1)';
+      }, 10);
     }
   };
 
